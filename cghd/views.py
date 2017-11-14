@@ -8,11 +8,16 @@ from django import forms
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+import hashlib
 # from django.template import RequestContext
 
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 print('---------{}'.format(BASE_DIR))
+
+def t2(req):
+	user = req.user
+	return render(req, 'cghd/t2.html',{'user':user})
 
 @login_required
 def index(req):
@@ -84,10 +89,14 @@ def loadUnload(req):
 @csrf_exempt
 def uploadFile(req):
 	if req.method == "POST":
-		file = req.FILES['upfile'].name
+		myFile = req.FILES.get('upfile')
+		file = myFile.read()
+		author = req.user.username
+		with open('cghd/files/{}-{}'.format(author, myFile.name), 'wb') as fn:
+			fn.write(file)
+		my_file = os.path.join(BASE_DIR, 'files/{}-{}'.format(author, myFile.name))
 
-		excelFile = os.path.join(BASE_DIR, file)
-		dataList = cghd.excel.ReadXls(excelFile)
+		dataList = cghd.excel.ReadXls(my_file)
 
 		print(str(dataList))
 
@@ -110,10 +119,14 @@ def uploadSupplier(req):
 @csrf_exempt
 def uploadMaster(req):
 	if req.method == "POST":
-		file = req.FILES['upfile'].name
+		myFile = req.FILES.get('upfile')
+		file = myFile.read()
+		author = req.user.username
+		with open('cghd/files/{}-{}'.format(author, myFile.name), 'wb') as fn:
+			fn.write(file)
+		my_file = os.path.join(BASE_DIR, 'files/{}-{}'.format(author, myFile.name))
 
-		excelFile = os.path.join(BASE_DIR, file)
-		dataList = cghd.excel.ReadXls(excelFile)
+		dataList = cghd.excel.ReadXls(my_file)
 
 		print(str(dataList))
 
@@ -124,10 +137,14 @@ def uploadMaster(req):
 @csrf_exempt
 def uploadAr(req):
 	if req.method == "POST":
-		file = req.FILES['upfile'].name
+		myFile = req.FILES.get('upfile')
+		file = myFile.read()
+		author = req.user.username
+		with open('cghd/files/{}-{}'.format(author, myFile.name), 'wb') as fn:
+			fn.write(file)
+		my_file = os.path.join(BASE_DIR, 'files/{}-{}'.format(author, myFile.name))
 
-		excelFile = os.path.join(BASE_DIR, file)
-		dataList = cghd.excel.ReadXls(excelFile)
+		dataList = cghd.excel.ReadXls(my_file)
 
 		print(str(dataList))
 
@@ -138,10 +155,14 @@ def uploadAr(req):
 @csrf_exempt
 def uploadAp(req):
 	if req.method == "POST":
-		file = req.FILES['upfile'].name
+		myFile = req.FILES.get('upfile')
+		file = myFile.read()
+		author = req.user.username
+		with open('cghd/files/{}-{}'.format(author, myFile.name), 'wb') as fn:
+			fn.write(file)
+		my_file = os.path.join(BASE_DIR, 'files/{}-{}'.format(author, myFile.name))
 
-		excelFile = os.path.join(BASE_DIR, file)
-		dataList = cghd.excel.ReadXls(excelFile)
+		dataList = cghd.excel.ReadXls(my_file)
 
 		print(str(dataList))
 
@@ -151,10 +172,14 @@ def uploadAp(req):
 
 def uploadedFile(req):
 	if req.method == "POST":
-		file = req.FILES['upfile'].name
+		myFile = req.FILES.get('upfile')
+		file = myFile.read()
+		author = req.user.username
+		with open('cghd/files/{}-{}'.format(author, myFile.name), 'wb') as fn:
+			fn.write(file)
+		my_file = os.path.join(BASE_DIR, 'files/{}-{}'.format(author, myFile.name))
 
-		excelFile = os.path.join(BASE_DIR, file)
-		dataList = cghd.excel.ReadXls(excelFile)
+		dataList = cghd.excel.ReadXls(my_file)
 
 		print(str(dataList))
 
