@@ -1,4 +1,5 @@
 import xlrd
+from django.utils import timezone
 
 def ReadXls(excelFile):
 	data = xlrd.open_workbook(excelFile)
@@ -9,6 +10,7 @@ def ReadXls(excelFile):
 	dataList = []
 	dict1 = {}
 	header = []
+
 	for i in range(0, nrows):
 		if i== 0:
 			header = table.row_values(0)
@@ -17,7 +19,14 @@ def ReadXls(excelFile):
 			rowValues = table.row_values(i)
 
 			for j in range(0,ncols):
-				dict1[header[j].replace('\n','')] ='{}'.format(str(rowValues[j]))
+				if header[j].replace('\n','').find('日期') >= 0:
+					print(rowValues[j])
+					if rowValues[j]:
+						dict1[header[j].replace('\n','')] ='{}'.format(str(xlrd.xldate.xldate_as_datetime(rowValues[j], data.datemode)))
+					else:
+						dict1[header[j].replace('\n','')] ='{}'.format(str(timezone.now()))
+				else:
+					dict1[header[j].replace('\n','')] ='{}'.format(str(rowValues[j]))
 			tmpDict = dict1.copy()
 			dataList.append(tmpDict)
 

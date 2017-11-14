@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from cghd.models import XlsInfo
+from cghd.models import XlsInfo, Business
 from django.contrib.auth.models import User
 import cghd.excel
 import os
@@ -128,12 +128,70 @@ def uploadMaster(req):
 
 		dataList = cghd.excel.ReadXls(my_file)
 
-		print(str(dataList))
+		# print(str(dataList))
+		i = 0
+		print('Now, we are going to save the dataList to db...')
+		for data in dataList:
+			print(u'卸货日期: {}'.format(data['卸货日期']))
+			Business(Order = data['订单号'],
+				In_Out = data['内外部'],
+				Area = data['所属区域'],
+				C_ID = data['客户ID'],
+				C_BriefName = data['客户名称'],
+				Unload_Address = data['卸气地'],
+				Unload_Date = data['卸货日期'],
+				S_ID = data['供应商ID'],
+				S_BriefName = data['供应商'],
+				Source_Address = data['气源地'],
+				Carrier_ID = data['承运商ID'],
+				Carrier_BriefName = data['承运公司'],
+				Trade_Type = data['票制'],
+				Load_Date = data['装货日期'],
+				Tractor_No = data['牵引车号']
+				# Tank_No = data['槽车号'],
+				# Driver = data['驾驶员'],
+				# Supercargo = data['押运员'],
+				# Tele_No = data['手机号'],
+				# State = data['状态'],
+				# Update_Date = data['操作日期'],
+				# Load_QTY = data['装气量（吨）'],
+				# Unload_QTY = data['卸气量（吨）'],
+				# Dispatch_Mark = data['调度备注'],
+				# Electricity_Amount = data['电商号'],
+				# Sales_QTY = data['销售结算量（吨）'],
+				# PO_QTY = data['采购结算量（吨）'],
+				# Logistics_QTY = data['物流结算量（吨）'],
+				# Sales_Price_Letter = data['销售价格函'],
+				# Sales_Price = 0,# data['销售单价'],
+				# Sales_Amount = 0,#data['销售金额'],
+				# Customer_CheckDate = data['客户核对'],
+				# Customer_IsBilling = data['是否开票'],
+				# PO_Price_Letter = data['采购价格函'],
+				# PO_Price = 0,#data['采购单价'],
+				# PO_Amount =0,#data['采购金额'],
+				# Supplier_CheckDate = data['供应商核对'],
+				# Supplier_IsBilling = data['是否开票'],
+				# Logistics_Price_Letter = data['物流价格函'],
+				# Logistics_Price = 0,#data['运输单价'],
+				# Logistics_Amount = 0,#data['运费金额'],
+				# Logistics_CheckDate = data['承运商核对'],
+				# Logistics_IsBilling = data['是否开票']
+				# M_Deviation = 1,
+				# D_Deviation = 1
+			).save()
+			break
+			i += 1
+		print('i = {}'.format(i))
+		print('Save the dataList to db completely...')
 
 		return HttpResponse(str(dataList).replace("'",'"'))
 	else:
+		print('fffffffffffffffffffff')
+		print(xldate_as_datetime('43034.0'))
+		print('fffffffffffffffffffff')
 		return HttpResponse("get")
-
+		# M_Deviation = 0,#str2int(data['毛差']),
+		# D_Deviation = 0#str2int(data['吨毛差'])
 @csrf_exempt
 def uploadAr(req):
 	if req.method == "POST":
@@ -186,6 +244,15 @@ def uploadedFile(req):
 		return HttpResponse(str(dataList).replace("'",'"'))
 	else:
 		return HttpResponse("get")
+
+def str2int(s):
+	print('s: {}'.format(s))
+	if s:
+		print(1)
+		return int(s)
+	else:
+		print(2)
+		return 0
 
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
