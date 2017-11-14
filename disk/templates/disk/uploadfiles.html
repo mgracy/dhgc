@@ -1,0 +1,32 @@
+{% extends 'disk/index.html' %}
+
+{% block content %}
+	<!-- show_server_list -->
+	<div class="show-file bounceIn">
+
+		{% if files %}
+	    <div class="file-title">
+	        <div class="file-name1" style="width:24%; margin-left:1%;">FileName</div>
+	        <div class="file-size" style="width:10%;">FileSize</div>
+	        <div class="file-size" style="width:10%;">Downloads</div>
+	        <div class="file-date" style="width:20%;">FileDate</div>
+	        <div class="file-link" style="width:35%;">FileLink</div>
+	    </div>
+	    <div class="file-content">
+	        <div class="file-name" style="width:24%;margin-left:1%;">{{files.name}}	                        
+	        </div>
+	        <div class="file-size" style="width:10%;">{{files.size}}</div>
+			<div class="file-date" style="width:10%;">{{files.downloads}}</div>
+	        <div class="file-date" style="width:20%;">{{files.created_date}}</div>
+	        <div class="file-link" style="width:35%; padding-right: 80px; text-overflow: ellipsis; overflow: hidden;">
+	            <span>
+	                {{files.url}}
+	            </span>
+	        </div>
+	        <a href="{{files.url}}" style="color:#FFF;"><button>Download</button></a>
+	    </div>
+	    {% else %}
+	    	{# <div><h1>Nothing</h1></div> #}
+	    {% endif %}
+	</div>
+{% endblock %}

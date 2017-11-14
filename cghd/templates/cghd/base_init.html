@@ -1,0 +1,19 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/fileinput.min.css' %}">
+	<script type="text/javascript" src="{% static 'js/jquery-1.10.0.min.js' %}"></script>
+</head>
+<body>
+	<h1>这是模板页</h1>
+
+	{% block main %}
+	
+	{% endblock%}
+
+</body>
+</html>

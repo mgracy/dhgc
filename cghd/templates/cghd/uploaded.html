@@ -1,0 +1,57 @@
+{% extends 'cghd/base.html' %}
+
+{% block main %}
+
+<form method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="container-fluid">
+		<input type="file" name="upfile" />
+		<input type="submit" value="ok" />
+		<table class="table table-striped">
+			<tr>
+				<th>工号</th>
+				<th>姓名</th>
+				<th>性别</th>
+				<th>部门</th>
+				<th>邮箱</th>
+				<th>电话</th>
+			</tr>
+			<tr>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+			</tr>
+			<tr>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+				<td>10022936</td>
+			</tr>
+		</table>
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$("input:submit").click(function(){
+			$.ajax({
+				'url':'upload/',
+				'type':'post',
+				'datatype':'json',
+				onsuccess:function(data){
+					console.log('ss');
+				},
+				onerror:function(err){
+					console.log(err);
+				}
+			});
+		});
+	});
+
+</script>
+</form>
+
+{% endblock %}

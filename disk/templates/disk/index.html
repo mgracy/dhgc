@@ -1,0 +1,120 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>上传文档 - 首页</title>
+	<link rel="stylesheet" href="{% static 'disk/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'disk/css/animate.min.css' %}">
+	<link rel="stylesheet" href="{% static 'disk/css/style.css' %}">
+	<link rel="stylesheet" href="https://at.alicdn.com/t/font_xtmtjsdjlmc84cxr.css">
+	<link rel="stylesheet" href="https://at.alicdn.com/t/font_k8psy17rqdoyldi.css">
+	<style>
+		body{
+			background-image: url({% static 'disk/images/bannerq3.jpg' %});
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+	    <div class="container">
+	        <div class="row" style="display:none">
+	            
+	            <div class="col-sm-6">
+	                <div class="logo wow bounceInDown" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: bounceInDown;">
+	                    <a class="site-logo" href="/">Teacher Hadron</a>
+	                </div>
+	            </div>
+
+	            <div class="col-sm-6">
+	                <div class="logo-desc wow bounceInRight" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: bounceInRight;">
+	                 <a href="/my"> <span class="logo-desc-text" href="/"><i class="iconfont"></i>Manage my files</span></a>
+					</div>
+	            </div>
+
+	        </div><!-- /.Row -->
+	    </div><!-- ./container -->
+	</header>
+	<!--===== END Header =====-->
+
+	<!--===== Begin Update File =====-->
+	<section id="content">
+	    <div class="container">
+	        <div class="col-sj-12">
+	            <!-- update-file-container -->
+	            <div class="up-container wow bounceIn" data-wow-delay="0.9s" style="visibility: visible; animation-delay: 0.9s; animation-name: bounceIn;">
+
+			<!-- search file -->
+                <form id="search" action="/search" method="get">
+				    <div class="input-box">
+	                        <input id="files-info" name="kw" type="text" onkeydown="if(event.keyCode==13){return false;}" autocomplete="off" placeholder="Search File">
+	                        <span class="iconfont search-text-icon"></span>
+                    </div>
+                </form><!-- END search file -->
+			
+			<!-- upload files -->
+                <form id="form" action="/disk/upload/" method="post" runat="server" enctype="multipart/form-data">
+                	{% csrf_token %}
+                    <input id="files" name="upfile" multiple="multiple" style="display:none;" class="file-addr" type="file">
+                    <input id="bt" type="button" value="Upload File">
+                </form><!-- END Upload file -->
+
+	            </div>
+	             
+            	{% block content %}
+            	
+				{% endblock %}
+	        </div>
+	    </div><!-- /.container -->
+	</section>
+	<!--===== END Update File =====-->
+
+	<!--===== Begin Text =====-->
+	<section>
+	    <div class="container">
+	        <div class="row">
+	            
+	            <div class="col-md-12 col-xs-12">
+	                <div class="h1-border wow rollIn" data-wow-delay="0.7s" style="visibility: visible; animation-delay: 0.7s; animation-name: rollIn;">
+	                    <h1>Hadron Network Disk</h1>
+	                </div>
+	            </div>
+
+	        </div><!-- /.row -->
+	    </div>
+	</section>
+	<!--===== END Text =====-->
+
+	<!--===== Begin Page Description =====-->
+	<section>
+	    <div class="container">
+	        <div class="row">
+	            
+	            <div class="col-xs-12">
+	                <h1 class="wow fadeInUp" data-wow-delay="0.4s" style="visibility: visible; animation-delay: 0.4s; animation-name: fadeInUp;"><span>About</span> The Desc...</h1>
+	                <p class="about-text wow slideInLeft" style="visibility: visible; animation-name: slideInLeft;">1. Upload the file size is not more than 5M</p>
+	                <p class="about-text wow slideInLeft" style="visibility: visible; animation-name: slideInLeft;">2. Please properly keep network backup link</p>
+	            </div>
+
+	        </div><!-- /.row -->
+	    </div>
+	</section>
+	<!--===== END Page Description =====-->
+
+	<footer class="foot">
+	    <div class="container">
+	        <div class="row">
+
+	            <div class="col-xs-12">
+	                <p class="wow bounceIn footer-text" data-wow-delay="0.7s" style="visibility: visible; animation-delay: 0.7s; animation-name: bounceIn;">Copyright © 2017.Company gracyma All rights reserved.</p>
+	            </div>
+
+	        </div><!-- /.row -->
+	    </div>
+	</footer>
+
+	<script type="text/javascript" src="{% static 'js/jquery-1.10.0.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+</body>
+</html>

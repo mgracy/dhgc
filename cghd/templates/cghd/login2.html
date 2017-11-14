@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="">
+    <head>
+        <meta name="robots" content="noarchive" />
+        <meta name="viewport" content="width=100%, initial-scale=1.0, maximum-scale=1.0">
+        <meta name="referrer" content="origin-when-cross-origin">
+        <title>
+            GTI Wechat Log In
+        </title>
+        <link rel="shortcut icon" href="https://launchpad-asset1.37signals.com/favicon.ico">
+        <meta name="theme-color" content="#3B9964">
+        <link rel="stylesheet" href="{% static 'activity/css/login.css' %}">
+        <script type="text/javascript" src="{% static 'activity/js/jquery-1.10.0.min.js' %}"></script>
+    </head>
+    <body class="campfire login campfire">
+        <div class="brand-wrapper" data-state="username">
+            <div class="balloon">
+                <div class="hide--when-loading txt--left">
+                    <h1>
+                        Log in to GTI Wechet Center
+                    </h1>
+                    <div class="break txt--center txt--subtle push--top push_half--bottom">
+                        <div class="break__content">
+                            use username or email address
+                        </div>
+                    </div>
+                    {% if message %}
+                    <div class="flash txt--center">
+                        <h2 class="txt--red flush">We didn’t recognize that password.</h2>
+
+                        <!--<p>Forgot your password? <a href="/campfire/forgot_password">Reset it here</a>.</p>-->
+                    </div>
+                    {% endif %}
+                    <form data-behavior="login_form" data-profile-url="/session/profile"
+                    accept-charset="UTF-8" method="post">
+                        {% csrf_token %}
+                        <input name="utf8" type="hidden" value="&#x2713;" />
+                        <input type="hidden" name="authenticity_token" value="3Ad395QJJmpqbfx5KFCFGXyceGPKslAsBDcSTlh+ebGBivXtXvh70CnTcCWjMRv7uYfR1jDvIOieHNJGRa7lSw=="
+                        />
+                        <input type="hidden" name="product" id="product" value="gtiwechat" />
+                        <input type="hidden" name="remember_me" id="remember_me" value="true"
+                        />
+                        <div class="field">
+                            <label class="field__label" for="username">
+                                Email or username
+                            </label>
+                            <input type="text" name="username" id="username" value="" autocomplete="on"
+                            autocorrect="off" autocapitalize="off" class="input--text" placeholder="e.g. julie@widgetco.com"
+                            data-role="username" data-original-value="" />
+                        </div>
+                        <div class="push_half--bottom" id="wrongUserAccount" style="display: none; margin-top: -13.6px;"
+                        data-role="unrecognized_notice_container">
+                            <small class="txt--red">
+                                We couldn&rsquo;t find that one. Want to try another?
+                            </small>
+                        </div>
+                        <div class="push_half--bottom" style="display: none; margin-top: -13.6px;"
+                        data-role="authenticates_with_google_notice_container">
+                            <small class="txt--red">
+                                Oops, you need to click the Google button up top ↑
+                            </small>
+                        </div>
+                        <div class="field" style="display: none;" data-role="password_container">
+                            <label class="field__label" for="password">
+                                Password
+                            </label>
+                            <input type="password" name="password" id="password" autocomplete="off"
+                            autocorrect="off" autocapitalize="off" class="input--text" />
+                        </div>
+                        <button name="button" type="button" class="action_button" data-role="next_button">
+                            Next
+                        </button>
+                        <button class="g-recaptcha action_button" style="display: none;" data-role="login_button"
+                        disabled="disabled" data-sitekey="6LcauQ4UAAAAAKEP51I0gdpdTMES628dFZ323g_K"
+                        data-callback="loginRecaptchaCallback">
+                            Log in
+                        </button>
+                    </form>
+                </div>
+                <h1 class="hide--unless-loading">
+                    Logging you in&hellip;
+                </h1>
+                <div class="loading hide--unless-loading" id="progressBar">
+                </div>
+            </div>
+<!--             <div class="footer">
+                <strong>
+                    Help:
+                </strong>
+                <a href="/accounts/forgot_password">
+                    Reset your password
+                </a>
+            </div> -->
+        </div>
+        <script>
+            //<![CDATA[
+            $('username').focus();
+            $('#username').change(function(){
+                $(this).removeClass('input--error');
+                $("#wrongUserAccount").hide();
+                $("div.flash.txt--center").hide();
+            });
+            //]]>
+            $('button[data-role="next_button"]').click(function(){
+                $this = $(this);
+                $.ajax({
+                    url:'/finduser/',
+                    type:'get',
+                    data:{'username':$('#username').val()},
+                    success:function(data){
+                        var res = eval('(' + data + ')');
+                        if (res['code'] == 200){
+                            $('div[data-role="password_container"]').show();
+                            $this.hide();
+                            $('button[data-role="login_button"]').show().prop('disabled', false);
+                        }else{
+                            $("#username").addClass('input--error');
+                            $("#wrongUserAccount").show();
+                        }
+                    },
+                    error:function(err){
+                        console.log(err);
+                    }
+                })
+            });
+        </script>
+    </body>
+
+</html>

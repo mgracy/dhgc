@@ -1,0 +1,299 @@
+{% extends 'cghd/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div id='preview'>
+{# 	<img src="{% static 'imgs/loader.gif' %}" id="imgLoading" alt="Uploading...." /> #}
+</div>
+{# action="upload/"  method="post" enctype="multipart/form-data" #}
+{# <form id="formExcelUpload" method="post" action="/cghd/uploadMaster/" > #}
+	{% csrf_token %}
+
+<div class="row"><h3>中燃宏大购销台帐-基础数据维护</h3></div>	
+
+<div class="form">
+	<input id="input-b2" name="upfile" type="file" class="file" data-show-preview="false" data-allowed-file-extensions='["csv", "xls", "xlsx"]' data-show-upload="true">
+	<br>
+	{# <input type="button" id="btnUploadImg" class="btn btn-primary" value="Upload"> #}
+</div>
+
+<div id="kv-error-1" style="margin-top:10px;display:none;">error</div>
+<div id="kv-success-1" class="alert alert-success" style="margin-top:10px;display:none;">success</div>
+<div id="divResult"></div>
+
+
+<script>
+	 $("#input-b2").fileinput({
+	    uploadUrl: "/cghd/uploadMaster/",
+	    uploadAsync: true,
+	    showPreview: false,
+	    allowedFileExtensions: ["csv", "xls", "xlsx"],
+	    maxFileCount: 1,
+	    elErrorContainer: '#kv-error-1'
+	}).on('filebatchpreupload', function(event, data, id, index) {
+	    $('#kv-success-1').html('<h4>Upload Status</h4><ul></ul>').hide();
+	    console.log('filebatchpreupload');
+	    console.log(data.response);
+	}).on('fileuploaded', function(event, data, id, index){
+		console.log('fileuploaded');
+		console.log(data);
+	}).on('fileloaded', function(event, data, id, index) {
+		console.log('hello.............');
+		console.log('fileloaded');
+		console.log(data.response);
+		$('#kv-success-1').html("请点击取消或上传按钮");
+	    $('#kv-success-1').fadeIn('slow');
+	}).on('filebatchuploaderror', function(err){
+		console.log('filebatchuploaderror');
+		console.log(err);
+	}).on('filebatchuploadsuccess', function(event, data, id, index){
+		console.log('filebatchuploadsuccess');
+		var data = data.response;
+		var table = '<table class="table table-striped"> '+
+						'<tr> '+
+							'<th>订单号</th> '+
+							'<th>内外部</th> '+
+							'<th>所属区域</th> '+
+							'<th>客户ID</th> '+
+							'<th>客户名称</th> '+
+							'<th>卸气地</th> '+
+							'<th>卸货日期</th> '+
+							'<th>供应商ID</th> '+
+							'<th>供应商</th> '+
+							'<th>气源地</th> '+
+							'<th>承运商ID</th> '+
+							'<th>承运公司</th> '+
+							'<th>票制</th> '+
+							'<th>装货日期</th> '+
+							'<th>牵引车号</th> '+
+							'<th>槽车号</th> '+
+							'<th>驾驶员</th> '+
+							'<th>押运员</th> '+
+							'<th>手机号</th> '+
+							'<th>状态</th> '+
+							'<th>操作日期</th> '+
+							'<th>装气量（吨）</th> '+
+							'<th>卸气量（吨）</th> '+
+							'<th>磅差（吨）</th> '+
+							'<th>调度备注</th> '+
+							'<th>电商号</th> '+
+							'<th>销售结算量（吨）</th> '+
+							'<th>采购结算量（吨）</th> '+
+							'<th>物流结算量（吨）</th> '+
+							'<th>销售价格函</th> '+
+							'<th>销售单价</th> '+
+							'<th>销售金额</th> '+
+							'<th>客户核对</th> '+
+							'<th>是否开票</th> '+
+							'<th>采购价格函</th> '+
+							'<th>采购单价</th> '+
+							'<th>采购金额</th> '+
+							'<th>供应商核对</th> '+
+							'<th>是否开票</th> '+
+							'<th>物流价格函</th> '+
+							'<th>运输单价</th> '+
+							'<th>运费金额</th> '+
+							'<th>承运商核对</th> '+
+							'<th>是否开票</th> '+
+							'<th>毛差</th> '+
+							'<th>吨毛差</th> '+
+							'<th>备注</th> '+
+						'</tr> ';
+		    for(var i=0; i<data.length; i++) {
+				table += '<tr> '+
+							'<td>' + data[i]["订单号"] + '</td> '+
+							'<td>' + data[i]["内外部"] + '</td> '+
+							'<td>' + data[i]["所属区域"] + '</td> '+
+							'<td>' + data[i]["客户ID"] + '</td> '+
+							'<td>' + data[i]["客户名称"] + '</td> '+
+							'<td>' + data[i]["卸气地"] + '</td> '+
+							'<td>' + data[i]["卸货日期"] + '</td> '+
+							'<td>' + data[i]["供应商ID"] + '</td> '+
+							'<td>' + data[i]["供应商"] + '</td> '+
+							'<td>' + data[i]["气源地"] + '</td> '+
+							'<td>' + data[i]["承运商ID"] + '</td> '+
+							'<td>' + data[i]["承运公司"] + '</td> '+
+							'<td>' + data[i]["票制"] + '</td> '+
+							'<td>' + data[i]["装货日期"] + '</td> '+
+							'<td>' + data[i]["牵引车号"] + '</td> '+
+							'<td>' + data[i]["槽车号"] + '</td> '+
+							'<td>' + data[i]["驾驶员"] + '</td> '+
+							'<td>' + data[i]["押运员"] + '</td> '+
+							'<td>' + data[i]["手机号"] + '</td> '+
+							'<td>' + data[i]["状态"] + '</td> '+
+							'<td>' + data[i]["操作日期"] + '</td> '+
+							'<td>' + data[i]["装气量（吨）"] + '</td> '+
+							'<td>' + data[i]["卸气量（吨）"] + '</td> '+
+							'<td>' + data[i]["磅差（吨）"] + '</td> '+
+							'<td>' + data[i]["调度备注"] + '</td> '+
+							'<td>' + data[i]["电商号"] + '</td> '+
+							'<td>' + data[i]["销售结算量（吨）"] + '</td> '+
+							'<td>' + data[i]["采购结算量（吨）"] + '</td> '+
+							'<td>' + data[i]["物流结算量（吨）"] + '</td> '+
+							'<td>' + data[i]["销售价格函"] + '</td> '+
+							'<td>' + data[i]["销售单价"] + '</td> '+
+							'<td>' + data[i]["销售金额"] + '</td> '+
+							'<td>' + data[i]["客户核对"] + '</td> '+
+							'<td>' + data[i]["是否开票"] + '</td> '+
+							'<td>' + data[i]["采购价格函"] + '</td> '+
+							'<td>' + data[i]["采购单价"] + '</td> '+
+							'<td>' + data[i]["采购金额"] + '</td> '+
+							'<td>' + data[i]["供应商核对"] + '</td> '+
+							'<td>' + data[i]["是否开票"] + '</td> '+
+							'<td>' + data[i]["物流价格函"] + '</td> '+
+							'<td>' + data[i]["运输单价"] + '</td> '+
+							'<td>' + data[i]["运费金额"] + '</td> '+
+							'<td>' + data[i]["承运商核对"] + '</td> '+
+							'<td>' + data[i]["是否开票"] + '</td> '+
+							'<td>' + data[i]["毛差"] + '</td> '+
+							'<td>' + data[i]["吨毛差"] + '</td> '+
+							'<td>' + data[i]["备注"] + '</td> '+
+						'</tr> ';
+			}
+
+			table += '</table';
+						
+		$("#divResult").html(table);	
+		$('#kv-success-1').html("上传成功");
+		$('#kv-success-1').fadeIn('show').fadeOut(5000);
+	}).on('filebatchuploadcomplete', function(event, data, id, index){
+		console.log('filebatchuploadcomplete');
+		console.log(data);
+	});
+</script>
+{# </form> #}
+
+</script>
+
+
+	<script type="text/javascript">
+
+		$("#btnUploadImg").on('click', function(e){
+			console.log('btnsubmit click');
+			var fileName = $(".file-caption-name").attr("title");
+			$.ajax({
+				url:'/cghd/uploadMaster/',
+				type:'post',
+				data: {'fileName':fileName},
+				datatype:'json',
+				enctype: 'multipart/form-data',
+				success:function(data){
+					console.log(data);
+					console.log(typeof(data));
+					data = eval('('+data+')');
+					var table = '<table class="table table-striped"> '+
+									'<tr> '+
+										'<th>订单号</th> '+
+										'<th>内外部</th> '+
+										'<th>所属区域</th> '+
+										'<th>客户ID</th> '+
+										'<th>客户名称</th> '+
+										'<th>卸气地</th> '+
+										'<th>卸货日期</th> '+
+										'<th>供应商ID</th> '+
+										'<th>供应商</th> '+
+										'<th>气源地</th> '+
+										'<th>承运商ID</th> '+
+										'<th>承运公司</th> '+
+										'<th>票制</th> '+
+										'<th>装货日期</th> '+
+										'<th>牵引车号</th> '+
+										'<th>槽车号</th> '+
+										'<th>驾驶员</th> '+
+										'<th>押运员</th> '+
+										'<th>手机号</th> '+
+										'<th>状态</th> '+
+										'<th>操作日期</th> '+
+										'<th>装气量（吨）</th> '+
+										'<th>卸气量（吨）</th> '+
+										'<th>磅差（吨）</th> '+
+										'<th>调度备注</th> '+
+										'<th>电商号</th> '+
+										'<th>销售结算量（吨）</th> '+
+										'<th>采购结算量（吨）</th> '+
+										'<th>物流结算量（吨）</th> '+
+										'<th>销售价格函</th> '+
+										'<th>销售单价</th> '+
+										'<th>销售金额</th> '+
+										'<th>客户核对</th> '+
+										'<th>是否开票</th> '+
+										'<th>采购价格函</th> '+
+										'<th>采购单价</th> '+
+										'<th>采购金额</th> '+
+										'<th>供应商核对</th> '+
+										'<th>是否开票</th> '+
+										'<th>物流价格函</th> '+
+										'<th>运输单价</th> '+
+										'<th>运费金额</th> '+
+										'<th>承运商核对</th> '+
+										'<th>是否开票</th> '+
+										'<th>毛差</th> '+
+										'<th>吨毛差</th> '+
+										'<th>备注</th> '+
+									'</tr> ';
+					    for(var i=0; i<data.length; i++) {
+							table += '<tr> '+
+										'<td>' + data[i]["订单号"] + '</td> '+
+										'<td>' + data[i]["内外部"] + '</td> '+
+										'<td>' + data[i]["所属区域"] + '</td> '+
+										'<td>' + data[i]["客户ID"] + '</td> '+
+										'<td>' + data[i]["客户名称"] + '</td> '+
+										'<td>' + data[i]["卸气地"] + '</td> '+
+										'<td>' + data[i]["卸货日期"] + '</td> '+
+										'<td>' + data[i]["供应商ID"] + '</td> '+
+										'<td>' + data[i]["供应商"] + '</td> '+
+										'<td>' + data[i]["气源地"] + '</td> '+
+										'<td>' + data[i]["承运商ID"] + '</td> '+
+										'<td>' + data[i]["承运公司"] + '</td> '+
+										'<td>' + data[i]["票制"] + '</td> '+
+										'<td>' + data[i]["装货日期"] + '</td> '+
+										'<td>' + data[i]["牵引车号"] + '</td> '+
+										'<td>' + data[i]["槽车号"] + '</td> '+
+										'<td>' + data[i]["驾驶员"] + '</td> '+
+										'<td>' + data[i]["押运员"] + '</td> '+
+										'<td>' + data[i]["手机号"] + '</td> '+
+										'<td>' + data[i]["状态"] + '</td> '+
+										'<td>' + data[i]["操作日期"] + '</td> '+
+										'<td>' + data[i]["装气量（吨）"] + '</td> '+
+										'<td>' + data[i]["卸气量（吨）"] + '</td> '+
+										'<td>' + data[i]["磅差（吨）"] + '</td> '+
+										'<td>' + data[i]["调度备注"] + '</td> '+
+										'<td>' + data[i]["电商号"] + '</td> '+
+										'<td>' + data[i]["销售结算量（吨）"] + '</td> '+
+										'<td>' + data[i]["采购结算量（吨）"] + '</td> '+
+										'<td>' + data[i]["物流结算量（吨）"] + '</td> '+
+										'<td>' + data[i]["销售价格函"] + '</td> '+
+										'<td>' + data[i]["销售单价"] + '</td> '+
+										'<td>' + data[i]["销售金额"] + '</td> '+
+										'<td>' + data[i]["客户核对"] + '</td> '+
+										'<td>' + data[i]["是否开票"] + '</td> '+
+										'<td>' + data[i]["采购价格函"] + '</td> '+
+										'<td>' + data[i]["采购单价"] + '</td> '+
+										'<td>' + data[i]["采购金额"] + '</td> '+
+										'<td>' + data[i]["供应商核对"] + '</td> '+
+										'<td>' + data[i]["是否开票"] + '</td> '+
+										'<td>' + data[i]["物流价格函"] + '</td> '+
+										'<td>' + data[i]["运输单价"] + '</td> '+
+										'<td>' + data[i]["运费金额"] + '</td> '+
+										'<td>' + data[i]["承运商核对"] + '</td> '+
+										'<td>' + data[i]["是否开票"] + '</td> '+
+										'<td>' + data[i]["毛差"] + '</td> '+
+										'<td>' + data[i]["吨毛差"] + '</td> '+
+										'<td>' + data[i]["备注"] + '</td> '+
+									'</tr> ';
+						}
+
+						table += '</table';
+									
+						$("#divResult").html(table);	
+				},
+				error:function(err){
+					console.log(err);
+				}
+			});
+		});
+
+</script>
+
+{# </form> #}
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'cghd/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div id='preview'>
+{# 	<img src="{% static 'imgs/loader.gif' %}" id="imgLoading" alt="Uploading...." /> #}
+</div>
+{# action="upload/"  method="post" enctype="multipart/form-data" #}
+{# <form id="formExcelUpload" method="post" action="/cghd/uploadMaster/" > #}
+	{% csrf_token %}
+
+<div class="row"><h3>中燃宏大购销台帐-商务运费结算人员</h3></div>	
+
+<form action="">
+  <div class="form-inline">
+    <div class="row col-md-11" style="margin-bottom:5px">
+      <div class="form-group input-group-sm col-xs-6 col-md-6 col-lg-6">
+        <label class="col-xs-3 col-md-3 col-lg-3" for="exampleInputName2">台帐日期</label>
+        <input type="text" class="form-control" id="exampleInputName2" placeholder="2017-11-11">
+      </div>
+      <div class="form-group input-group-sm col-xs-5 col-md-5 col-lg-5">
+        <label class="col-xs-3 col-md-3 col-lg-3" for="exampleInputEmail2">区域</label>
+        <input type="email" class="form-control" id="exampleInputEmail2" placeholder="华南">
+      </div>
+    </div>
+    <div class="row col-md-11" style="margin-bottom:5px">
+      <div class="form-group input-group-sm col-xs-6 col-md-6 col-lg-6">
+        <label class="col-xs-3 col-md-3 col-lg-3" for="exampleInputName2">供应商名称</label>
+        <input type="text" class="form-control" id="exampleInputName2" placeholder="2017-11-11">
+      </div>
+      <div class="form-group input-group-sm col-xs-5 col-md-5 col-lg-5">
+        <label class="col-xs-3 col-md-3 col-lg-3" for="exampleInputEmail2">客户名称</label>
+        <input type="email" class="form-control" id="exampleInputEmail2" placeholder="华南">
+      </div>
+    </div>    
+  </div>
+  <div class="form-inline">
+    <button type="submit" class="btn btn-default">Query</button>
+  </div>
+</form>
+
+<div id="kv-error-1" style="margin-top:10px;display:none;">error</div>
+<div id="kv-success-1" class="alert alert-success" style="margin-top:10px;display:none;">success</div>
+<div id="divResult"></div>
+
+
+
+{# </form> #}
+
+
+
+
+{# </form> #}
+
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'cghd/base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div id='preview'>
+{# 	<img src="{% static 'imgs/loader.gif' %}" id="imgLoading" alt="Uploading...." /> #}
+</div>
+{# action="upload/"  method="post" enctype="multipart/form-data" #}
+{# <form id="formExcelUpload" > #}
+	{% csrf_token %}
+
+<div class="form">
+	<input id="input-b2" name="upfile" type="file" class="file" data-show-preview="false" data-allowed-file-extensions='["csv", "xls", "xlsx"]' data-show-upload="false">
+	<input type="button" id="btnUploadImg" class="btn btn-primary" value="Upload">
+</div>
+
+<div id="divResult"></div>
+
+
+	</div>
+
+	<script type="text/javascript" src="{% static 'js/jquery-ui-1.8.24.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+	     <script type="text/javascript" src="{% static 'js/jquery.validate.min.js' %}"></script>
+	 <script type="text/javascript" src="{% static 'js/fileinput.min.js' %}"></script>
+	<script type="text/javascript">
+
+		$("#btnUploadImg").on('click', function(e){
+			console.log('btnsubmit click');
+			var fileName = $(".file-caption-name").attr("title");
+			$.ajax({
+				url:'/blog/uploadsupplier/',
+				type:'post',
+				data: {'fileName':fileName},
+				datatype:'json',
+				enctype: 'multipart/form-data',
+				success:function(data){
+					console.log(data);
+					console.log(typeof(data));
+					data = eval('('+data+')');
+					var table = '<table class="table table-striped"> '+
+									'<tr> '+
+										'<th>供应商ID</th> '+
+										'<th>供应商简称</th> '+
+										'<th>供应商全称</th> '+
+										'<th>联系人</th> '+
+										'<th>发票地址</th> '+
+										'<th>电话1</th> '+
+										'<th>电话2</th> '+
+										'<th>合同状态</th> '+	
+									'</tr> ';
+					    for(var i=0; i<data.length; i++) {
+							table += '<tr> '+
+										'<td>'+ data[i].SupplierID +'</td> '+
+										'<td>'+ data[i].S_Name1 +'</td> '+
+										'<td>'+ data[i].S_Name2 +'</td> '+
+										'<td>'+ data[i].S_Contact +'</td> '+
+										'<td>'+ data[i].S_BillingAddress +'</td> '+
+										'<td>'+ data[i].S_Phone1 +'</td> '+
+										'<td>'+ data[i].S_Phone2 +'</td> '+
+										'<td>'+ data[i].Contract_States +'</td> '+
+									'</tr> ';
+						}
+
+						table += '</table';
+									
+						$("#divResult").html(table);	
+					console.log('ss');
+				},
+				error:function(err){
+					console.log(err);
+				}
+			});
+		});
+
+</script>
+
+{# </form> #}
+
+{% endblock %}
