@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<title></title>
+	<link href="/static/cghd/css/bootstrap.min.css" title="" rel="stylesheet" />
+	<link title="" href="/static/cghd/css/aliyunstyle.css" rel="stylesheet" type="text/css"  />
+	<link title="blue" href="/static/cghd/css/dermadefault.css" rel="stylesheet" type="text/css"/>
+	<link title="green" href="/static/cghd/css/dermagreen.css" rel="stylesheet" type="text/css" disabled="disabled"/>
+	<link title="orange" href="/static/cghd/css/dermaorange.css" rel="stylesheet" type="text/css" disabled="disabled"/>
+	<link href="/static/cghd/css/templatecss.css" rel="stylesheet" title="" type="text/css" />
+	<link rel="stylesheet" href="/static/cghd/css/fileinput.min.css">
+
+	<script type="text/javascript" src="/static/cghd/js/jquery-1.10.0.min.js"></script>
+	<script type="text/javascript" src="/static/cghd/js/jquery-ui-1.8.24.min.js"></script>
+
+	<script type="text/javascript" src="/static/cghd/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/cghd/js/fileinput.min.js"></script>
+  <script type="text/javascript" src="/static/cghd/js/fileinput_locale_zh.js"></script>
+  	<script type="text/javascript" src="/static/cghd/js/bootstrap-editable.min.js"></script>
+</head>
+
+<body>
+<nav class="nav navbar-default navbar-mystyle navbar-fixed-top">
+  <div class="navbar-header">
+    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> 
+     <span class="icon-bar"></span> 
+     <span class="icon-bar"></span> 
+     <span class="icon-bar"></span> 
+    </button>
+    <a href="/cghd/" class="navbar-brand mystyle-brand"><span class="glyphicon glyphicon-home"></span></a> </div>
+  <div class="collapse navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li class="li-border"><a class="mystyle-color">中燃宏大采运销结算数据共享平台</a></li>
+    </ul>
+    <ul class="nav navbar-nav pull-right">
+      <li class="dropdown li-border"><a href="#" class="dropdown-toggle mystyle-color" data-toggle="dropdown">admin<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="/accounts/logout/">退出</a></li>
+        </ul>
+      </li>
+      <li class="dropdown"><a href="#" class="dropdown-toggle mystyle-color" data-toggle="dropdown">换肤<span class="caret"></span></a>
+        <ul class="dropdown-menu changecolor">
+          <li id="blue"><a href="#">蓝色</a></li>
+          <li class="divider"></li>
+          <li id="green"><a href="#">绿色</a></li>
+          <li class="divider"></li>
+          <li id="orange"><a href="#">橙色</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="down-main">
+  <div class="left-main left-full">
+    <div class="sidebar-fold"><span class="glyphicon glyphicon-menu-hamburger"></span></div>
+    <div class="subNavBox">
+      <div class="sBox">
+       <div class="subNav sublist-down"><span class="title-icon glyphicon glyphicon-chevron-down"></span><span class="sublist-title">用户中心</span>
+        </div>
+        <ul class="navContent" style="display:block">
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />基础数据维护</div>
+            <a href="/cghd/basicdata/"><span class="sublist-icon glyphicon glyphicon-user"></span><span class="sub-title">基础数据维护</span></a> </li>
+          <li><!--物流调度人员：业务主数据 -->
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />业务主数据</div>
+            <a href="/cghd/master/"><span class="sublist-icon glyphicon glyphicon-wrench"></span><span class="sub-title">业务主数据</span></a> </li>
+          <li><!--物流调度人员：上传实装、实卸、磅差 -->
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />上传实装、实卸、磅差</div>
+            <a href="/cghd/loadunload/"><span class="sublist-icon glyphicon glyphicon-wrench"></span><span class="sub-title">上传实装、实卸、磅差</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />计划调度人员</div>
+            <a href="/cghd/planschedule/"><span class="sublist-icon glyphicon glyphicon-search"></span><span class="sub-title">计划调度人员</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />商务运费结算人员</div>
+            <a href="/cghd/businessfreight/"><span class="sublist-icon glyphicon glyphicon-search"></span><span class="sub-title">商务运费结算人员</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />商务购销结算人员</div>
+            <a href="/cghd/businesspurchasesale/"><span class="sublist-icon glyphicon glyphicon-search"></span><span class="sub-title">商务购销结算人员</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />应收帐款</div>
+            <a href="/cghd/ar/"><span class="sublist-icon glyphicon glyphicon-wrench"></span><span class="sub-title">应收帐款</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />应付帐款</div>
+            <a href="/cghd/ap/"><span class="sublist-icon glyphicon glyphicon-wrench"></span><span class="sub-title">应付帐款</span></a></li>                        
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />财务总帐报表</div>
+            <a href="/cghd/fingareport/"><span class="sublist-icon glyphicon glyphicon-search"></span><span class="sub-title">财务总帐报表</span></a></li>                          
+        </ul>
+      </div>
+      <div class="sBox">
+        <div class="subNav sublist-up"><span class="title-icon glyphicon glyphicon-chevron-up"></span><span class="sublist-title">关于我们</span></div>
+        <ul class="navContent" style="display:none">
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />添加新闻</div>
+            <a href="#"><span class="sublist-icon glyphicon glyphicon-user"></span><span class="sub-title">添加新闻</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />添加新闻</div>
+            <a href="#"><span class="sublist-icon glyphicon glyphicon-user"></span><span class="sub-title">新闻管理</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />添加新闻</div>
+            <a href="#"><span class="sublist-icon glyphicon glyphicon-user"></span><span class="sub-title">添加新闻</span></a></li>
+          <li>
+            <div class="showtitle" style="width:100px;"><img src="/static/cghd/img/leftimg.png" />新闻管理</div>
+            <a href="#"><span class="sublist-icon glyphicon glyphicon-user"></span><span class="sub-title">新闻管理</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="right-product my-index right-full">
+     <div class="container-fluid">
+	   <div class="info-center">
+            <div class="content-list">
+               <!-- -----信息列表----- -->
+               <div class="row newslist" style="margin-top:20px;">
+                 <div class="col-md-12">
+                     <div class="panel panel-default">
+                      <div class="panel-heading">
+                       &nbsp;
+                       <a href="#" class="pull-right"><span class="glyphicon glyphicon-refresh"></span></a>
+                      </div>     
+                      <div class="panel-body" style="overFlow-x: scroll;">
+            						
+<div id='preview'>
+
+</div>
+
+
+	<input type='hidden' name='csrfmiddlewaretoken' value='LG55gJbYHbuQtjJDHJPfXRI2h76nLkpP205Gk77kWG1htOTYU6mF11XpsejlWgty' />
+
+<div class="row"><h3>t2</h3></div>	
+
+<div class="form">
+	<input id="input-b2" name="upfile" type="file" class="file" data-show-preview="false" data-allowed-file-extensions='["csv", "xls", "xlsx"]' data-show-upload="true">
+	<br>
+	
+</div>
+
+<div id="kv-error-1" style="margin-top:10px;display:none;">error</div>
+<div id="kv-success-1" class="alert alert-success" style="margin-top:10px;display:none;">success</div>
+<div class="col-md-12"> 
+<div style="float:right;margin:10px 0px 10px 5px"> 
+<a title="Add" href="./index.php?r=subprocess/add"> 
+<button type="button" class="btn btn-default" id="addData"><span style="color:#008000;background-color:#efefef;font-weight:bold;"></span>
+<span class="glyphicon glyphicon-plus"></span> 
+</button> 
+</a> 
+</div> 
+</div>
+<table class="table table-striped table-bordered table-hover" id="subprocessTable"></table> 
+<div id="divResult"><table id="table1" class="table table-striped"> <tbody><tr> <th>订单号</th> <th>内外部</th> <th>所属区域</th> <th>客户ID</th> <th>客户名称</th> <th>卸气地</th> <th>卸货日期</th> <th>供应商ID</th> <th>供应商</th> <th>气源地</th> <th>承运商ID</th> <th>承运公司</th> <th>票制</th> <th>装货日期</th> <th>牵引车号</th> <th>槽车号</th> <th>驾驶员</th> <th>押运员</th> <th>手机号</th> <th>状态</th> <th>操作日期</th> <th>装气量（吨）</th> <th>卸气量（吨）</th> <th>磅差（吨）</th> <th>调度备注</th> <th>电商号</th> <th>销售结算量（吨）</th> <th>采购结算量（吨）</th> <th>物流结算量（吨）</th> <th>销售价格函</th> <th>销售单价</th> <th>销售金额</th> <th>客户核对</th> <th>是否开票</th> <th>采购价格函</th> <th>采购单价</th> <th>采购金额</th> <th>供应商核对</th> <th>是否开票</th> <th>物流价格函</th> <th>运输单价</th> <th>运费金额</th> <th>承运商核对</th> <th>是否开票</th> <th>毛差</th> <th>吨毛差</th> <th>备注</th> </tr> <tr> <td class="clickme">B2017086063</td> <td>外部</td> <td>华东</td> <td></td> <td>安徽恒晟</td> <td>安徽合肥</td> <td>42977.0</td> <td></td> <td>中海油浙贸</td> <td>北仑</td> <td></td> <td>中燃宏途</td> <td>两票</td> <td>42976.0</td> <td>鄂K42625</td> <td></td> <td></td> <td></td> <td></td> <td>取消/增加 </td> <td></td> <td>20.56</td> <td>20.56</td> <td>0.0</td> <td></td> <td></td> <td>20.56</td> <td>20.56</td> <td></td> <td>双章</td> <td>3420.0</td> <td>70315.2</td> <td>9-1</td> <td></td> <td>无涵</td> <td>3020.0</td> <td>62091.2</td> <td>8-1</td> <td></td> <td></td> <td></td> <td>0.0</td> <td></td> <td></td> <td>8224.0</td> <td>400.0</td> <td></td> </tr> <tr> <td>B2017095428</td> <td>外部</td> <td>华东</td> <td></td> <td>安徽恒晟</td> <td>安徽合肥</td> <td>42985.0</td> <td></td> <td>中海油浙贸</td> <td>北仑</td> <td></td> <td>中燃宏途</td> <td>两票</td> <td>42984.0</td> <td>鄂K43301</td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td>19.44</td> <td>19.42</td> <td>-0.019999999999999574</td> <td></td> <td></td> <td>19.44</td> <td>19.44</td> <td></td> <td>双章</td> <td>3420.0</td> <td>66484.8</td> <td>9-1</td> <td></td> <td>无涵</td> <td>3070.0</td> <td>59680.8</td> <td>9-1</td> <td></td> <td></td> <td></td> <td>0.0</td> <td></td> <td></td> <td>6804.0</td> <td>350.0</td> <td></td> </tr> <tr> <td>B2017095429</td> <td>外部</td> <td>华东</td> <td></td> <td>安徽恒晟</td> <td>安徽合肥</td> <td>42986.0</td> <td></td> <td>中海油浙贸</td> <td>北仑</td> <td></td> <td>中燃宏途</td> <td>两票</td> <td>42985.0</td> <td>鄂K43509</td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td>19.5</td> <td>19.5</td> <td>0.0</td> <td></td> <td></td> <td>19.5</td> <td>19.5</td> <td></td> <td>双章</td> <td>3420.0</td> <td>66690.0</td> <td>9-1</td> <td></td> <td>无涵</td> <td>3070.0</td> <td>59865.0</td> <td>9-1</td> <td></td> <td></td> <td></td> <td>0.0</td> <td></td> <td></td> <td>6825.0</td> <td>350.0</td> <td></td> </tr> <tr> <td>B2017095430</td> <td>外部</td> <td>华东</td> <td></td> <td>安徽恒晟</td> <td>安徽合肥</td> <td>42988.0</td> <td></td> <td>中海油浙贸</td> <td>北仑</td> <td></td> <td>中燃宏途</td> <td>两票</td> <td>42987.0</td> <td>鄂K43559</td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td>19.46</td> <td>19.46</td> <td>0.0</td> <td></td> <td></td> <td>19.46</td> <td>19.46</td> <td></td> <td>双章</td> <td>3420.0</td> <td>66553.2</td> <td>9-1</td> <td></td> <td>无涵</td> <td>3250.0</td> <td>63245.0</td> <td>9-1</td> <td></td> <td></td> <td></td> <td>0.0</td> <td></td> <td></td> <td>3308.199999999997</td> <td>169.99999999999983</td> <td></td> </tr> <tr> <td>B2017086037</td> <td>外部</td> <td>华东</td> <td></td> <td>北京中嘉能</td> <td>绍兴市滨海工业区</td> <td>42974.0</td> <td></td> <td>中海油浙贸</td> <td>北仑</td> <td></td> <td>中燃宏途</td> <td>两票</td> <td>42973.0</td> <td>鄂K43290</td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td>19.3</td> <td>19.3</td> <td>0.0</td> <td></td> <td></td> <td>19.3</td> <td>19.3</td> <td></td> <td>双章</td> <td>3300.0</td> <td>63690.0</td> <td>9-1</td> <td></td> <td>无涵</td> <td>3250.0</td> <td>62725.0</td> <td>8-1</td> <td></td> <td></td> <td></td> <td>0.0</td> <td></td> <td></td> <td>965.0</td> <td>50.0</td> <td></td> </tr> </tbody></table></div>
+
+
+</script>
+
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#table1").delegate("td","click", tdclick);
+			
+		});
+		function tdclick()
+		{  
+		    var td=$(this);  
+		    td.attr("onclick", "");  
+		    //1,取出当前td中的文本内容保存起来  
+		    var text=td.text();  
+		    //2,清空td里面的内容  
+		    td.html(""); //也可以用td.empty();  
+		    //3，建立一个文本框，也就是input的元素节点  
+		    var input=$("<input size='10'>");  
+		    //4，设置文本框的值是保存起来的文本内容  
+		    input.attr("value",text);  
+		    input.bind("blur",function(){  
+		        var inputnode=$(this);  
+		        var inputtext=inputnode.val(); 
+		        if(inputtext !=""){ 
+			        var tdNode=inputnode.parent();  
+			        tdNode.html(inputtext);  
+			        tdNode.click(tdclick); 		        
+		        	console.log(33333333333);
+		        	console.log(inputtext);
+		        	td.attr("onclick", "tdclick()"); 
+		        }else{
+		        	console.log('3555');
+		        	return false;
+		        }		         
+		    });  
+		    input.keyup(function(event){  
+		        var myEvent =event||window.event;  
+		        var kcode=myEvent.keyCode;  
+		        if(kcode==13){  
+		            var inputnode=$(this);  
+		            var inputtext=inputnode.val();  
+		            var tdNode=inputnode.parent();  
+		            tdNode.html(inputtext);  
+		            tdNode.click(tdclick);  
+		        }  
+		    });  
+		  
+		    //5，将文本框加入到td中  
+		    td.append(input);  
+		    var t =input.val();  
+		    input.val("").focus().val(t);  
+		//              input.focus();  
+		  
+		    //6,清除点击事件  
+		    td.unbind("click");  
+		} 
+	// $(function () {
+ //        $("#table1").bootstrapTable({
+ //            toolbar: "#toolbar",
+ //            idField: "Id",
+ //            pagination: true,
+ //            showRefresh: true,
+ //            search: true,
+ //            clickToSelect: true,
+ //            queryParams: function (param) {
+ //                return {};
+ //            },
+ //            url: "/Editable/GetUsers",
+ //            columns: [{
+ //                checkbox: true
+ //            }, {
+ //                field: "UserName",
+ //                title: "用户名",
+ //                editable: {
+ //                    type: 'text',
+ //                    title: '用户名',
+ //                    validate: function (v) {
+ //                        if (!v) return '用户名不能为空';
+
+ //                    }
+ //                }
+ //            }, {
+ //                field: "Age",
+ //                title: "年龄",
+ //            }, {
+ //                field: "Birthday",
+ //                title: "生日",
+ //                formatter: function (value, row, index) {
+ //                    var date = eval('new ' + eval(value).source)
+ //                    return date.format("yyyy-MM-dd");
+ //                }
+ //            },
+ //            {
+ //                field: "DeptName",
+ //                title: "部门"
+ //            }, {
+ //                field: "Hobby",
+ //                title: "爱好"                
+ //            }],
+ //            onEditableSave: function (field, row, oldValue, $el) {
+ //                $.ajax({
+ //                    type: "post",
+ //                    url: "/Editable/Edit",
+ //                    data: row,
+ //                    dataType: 'JSON',
+ //                    success: function (data, status) {
+ //                        if (status == "success") {
+ //                            alert('提交数据成功');
+ //                        }
+ //                    },
+ //                    error: function () {
+ //                        alert('编辑失败');
+ //                    },
+ //                    complete: function () {
+
+ //                    }
+
+ //                });
+ //            }
+ //        });
+ //    });
+</script>
+
+
+
+
+                      </div>
+                    </div>
+                 </div>
+               </div>
+            </div>
+       </div>			
+	 </div>
+  </div>
+</div>
+<script type="text/javascript">
+$(function() {
+  var urlPath = "/cghd/master/";
+  $("ul.navContent li a").each(function(index, item){
+      if($(item).attr('href') == urlPath){
+          $(item).parent().addClass('active');
+          return false;
+      }
+  });
+  /*换肤*/
+  $(".dropdown .changecolor li").click(function() {
+    var style = $(this).attr("id");
+    $("link[title!='']").attr("disabled", "disabled");
+    $("link[title='" + style + "']").removeAttr("disabled");
+
+    $.cookie('mystyle', style, {
+      expires: 7
+    }); // 存储一个带7天期限的 cookie 
+  })
+  //gracy.ma 2017/11/8
+  // var cookie_style = $.cookie("mystyle"); 
+  // if(cookie_style!=null){ 
+  //     $("link[title!='']").attr("disabled","disabled"); 
+  //  $("link[title='"+cookie_style+"']").removeAttr("disabled"); 
+  // } 
+  /*左侧导航栏显示隐藏功能*/
+  $(".subNav").click(function() {
+    /*显示*/
+    if ($(this).find("span:first-child").attr('class') == "title-icon glyphicon glyphicon-chevron-down") {
+      $(this).find("span:first-child").removeClass("glyphicon-chevron-down");
+      $(this).find("span:first-child").addClass("glyphicon-chevron-up");
+      $(this).removeClass("sublist-down");
+      $(this).addClass("sublist-up");
+    }
+    /*隐藏*/
+    else {
+      $(this).find("span:first-child").removeClass("glyphicon-chevron-up");
+      $(this).find("span:first-child").addClass("glyphicon-chevron-down");
+      $(this).removeClass("sublist-up");
+      $(this).addClass("sublist-down");
+    }
+    // 修改数字控制速度， slideUp(500)控制卷起速度
+    $(this).next(".navContent").slideToggle(300).siblings(".navContent").slideUp(300);
+  })
+  /*左侧导航栏缩进功能*/
+  $(".left-main .sidebar-fold").click(function() {
+
+    if ($(this).parent().attr('class') == "left-main left-full") {
+      $(this).parent().removeClass("left-full");
+      $(this).parent().addClass("left-off");
+
+      $(this).parent().parent().find(".right-product").removeClass("right-full");
+      $(this).parent().parent().find(".right-product").addClass("right-off");
+
+    } else {
+      $(this).parent().removeClass("left-off");
+      $(this).parent().addClass("left-full");
+
+      $(this).parent().parent().find(".right-product").removeClass("right-off");
+      $(this).parent().parent().find(".right-product").addClass("right-full");
+
+    }
+  })
+
+  /*左侧鼠标移入提示功能*/
+  $(".sBox ul li").mouseenter(function() {
+    if ($(this).find("span:last-child").css("display") == "none") {
+      $(this).find("div").show();
+    }
+  }).mouseleave(function() {
+    $(this).find("div").hide();
+  })
+});
+</script>
+</body>
+</html>

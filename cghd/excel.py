@@ -20,11 +20,10 @@ def ReadXls(excelFile):
 
 			for j in range(0,ncols):
 				if header[j].replace('\n','').find('日期') >= 0:
-					print(rowValues[j])
 					if rowValues[j]:
-						dict1[header[j].replace('\n','')] ='{}'.format(str(xlrd.xldate.xldate_as_datetime(rowValues[j], data.datemode)))
+						dict1[header[j].replace('\n','')] ='{}'.format(str(xlrd.xldate.xldate_as_datetime(rowValues[j], data.datemode).date()))
 					else:
-						dict1[header[j].replace('\n','')] ='{}'.format(str(timezone.now()))
+						dict1[header[j].replace('\n','')] ='{}'.format(str(timezone.now().date()))
 				else:
 					dict1[header[j].replace('\n','')] ='{}'.format(str(rowValues[j]))
 			tmpDict = dict1.copy()
