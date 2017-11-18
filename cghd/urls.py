@@ -5,6 +5,7 @@ urlpatterns = [
 	url(r'^$', views.index, name='index'),
 	url(r'^upload/$', views.uploadFile),
 	url(r'^basicdata/$', views.basicData),
+	url(r'^salesorder/$', views.salesOrder),
 	# 业务主数据
 	url(r'^master/$', views.master),
 	url(r'^uploads/$', views.uploadedFile),

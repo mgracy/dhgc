@@ -32,6 +32,11 @@ def uploaded(req):
 	return render(req, 'cghd/uploaded.html')
 
 @login_required
+def salesOrder(req):
+	user = req.user
+	return render(req, 'cghd/salesOrder.html', {'user': user})
+
+@login_required
 def basicData(req):
 	return render(req, 'cghd/basicData.html', {'urlPath': req.path})
 
