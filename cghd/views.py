@@ -37,6 +37,31 @@ def salesOrder(req):
 	return render(req, 'cghd/salesOrder.html', {'user': user})
 
 @login_required
+def salesOrderCreate(req):
+	if req.method == "POST":
+		msg = "hello world"
+		print(req.POST)
+		print('000000000000000000000000000000')
+		user = req.user
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'msg': msg})
+	return HttpResponse('get')
+
+@login_required
+def transportData(req):
+	user = req.user
+	return render(req, 'cghd/transportData.html', {'user': user})
+
+@login_required
+def changeOrder(req):
+	user = req.user
+	return render(req, 'cghd/changeOrder.html', {'user': user})
+
+@login_required
+def orderData(req):
+	user = req.user
+	return render(req, 'cghd/orderData.html', {'user': user})
+
+@login_required
 def basicData(req):
 	return render(req, 'cghd/basicData.html', {'urlPath': req.path})
 
