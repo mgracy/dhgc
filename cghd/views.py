@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from cghd.models import XlsInfo, Business
+from cghd.models import XlsInfo, Business, Business_Actual
 from django.contrib.auth.models import User
 import cghd.excel
 import os
@@ -34,17 +34,74 @@ def uploaded(req):
 @login_required
 def salesOrder(req):
 	user = req.user
-	return render(req, 'cghd/salesOrder.html', {'user': user})
-
-@login_required
-def salesOrderCreate(req):
 	if req.method == "POST":
-		msg = "hello world"
-		print(req.POST)
+		msg = u"数据保存成功"
+		hiddenData = req.POST.get('hiddenData')
+		print(hiddenData)
+		hiddenData = hiddenData.replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		trs = hiddenData.split('<tr>')
+		for i in range(2, len(trs)):
+			tr = trs[i].replace('</tr>','')
+			tds = tr.split('<td>')
+			Business_Actual(
+				Order_No = tds[1],
+				Area = tds[2],
+				In_Out = tds[3],
+				C_Type = 'xxx',
+				C_ID = '666',
+				C_BriefName = tds[4],
+				Unload_Address = tds[5],
+				Unload_Date = tds[6],
+				Unload_Time = tds[7],
+				S_ID = 'sxxxx',
+				S_BriefName = tds[8],
+				Source_Address = tds[9],
+				Trade_Type = tds[10],
+				Gap_Price = tds[11],
+				GP_Price = tds[12],
+				CG_Price = tds[13],
+				Sales_Price = tds[14],
+				Transport_Price = tds[15],
+				DGL_Price = tds[16],
+				Transport_Distance = tds[17],
+				DFX_Cost = tds[18],
+				Carrier_ID = 'Carrixxxx',
+				Carrier_BriefName = 'CarriNamexxx',
+				# Load_Date = ,
+				# Tractor_No = ,
+				# Tank_No = tds[],
+				# Driver = tds[],
+				# Supercargo = tds[],
+				# Tele_No = tds[],
+				# Gap_Pounds = tds[],
+				# Load_QTY = tds[],
+				# Unload_QTY = tds[],
+				# Actual_PO_Amount = tds[],
+				# PO_Price = tds[],
+				# PO_QTY = tds[],
+				# Actual_Sales_Amount = tds[],
+				# Sales_Price = tds[],
+				# Sales_QTY = tds[],
+				# Actual_Logistics_Price = tds[],
+				# Logistics_Price = tds[],
+				# Logistics_QTY = tds[],
+				Salesmen = tds[19],
+				# M_Deviation = tds[],
+				# D_Deviation = tds[],
+				CreateDate = tds[20],
+				State = tds[21],
+				Dispatch_Mark = tds[22]
+			).save()
+
+
+		# for d in hiddenData:
+		# 	print(d)
+		# 	print('12')
 		print('000000000000000000000000000000')
 		user = req.user
 		return render(req, 'cghd/salesOrder.html', {'user': user, 'msg': msg})
-	return HttpResponse('get')
+	else:
+		return render(req, 'cghd/salesOrder.html', {'user': user})
 
 @login_required
 def transportData(req):
@@ -55,6 +112,70 @@ def transportData(req):
 def changeOrder(req):
 	user = req.user
 	return render(req, 'cghd/changeOrder.html', {'user': user})
+
+@login_required
+def getOrderInfo(req):
+	# businessLists = Business_Actual.objects.all()
+	# date = req.GET.get('date')
+	# area = req.GET.get('area')
+	# clientName = req.GET.get('clientName')
+	# businessLists = Business.objects.filter(Unload_Date=date).filter(Area=area).filter(C_BriefName=clientName)
+	businessLists = Business.objects.all()
+	print('len--{}'.format(len(businessLists)))
+	print(type(businessLists))
+	dataList = []
+	data = {}
+	for businessList in businessLists:
+		data['订单号'] = str(businessList.Order)
+		data['内外部'] = str(businessList.In_Out)
+		data['所属区域'] = str(businessList.Area)
+		data['客户ID'] = str(businessList.C_ID)
+		data['客户名称'] = str(businessList.C_BriefName)
+		data['卸气地'] = str(businessList.Unload_Address)
+		data['卸货日期'] = str(businessList.Unload_Date)
+		data['供应商ID'] = str(businessList.S_ID)
+		data['供应商'] = str(businessList.S_BriefName)
+		data['气源地'] = str(businessList.Source_Address)
+		data['承运商ID'] = str(businessList.Carrier_ID)
+		data['承运公司'] = str(businessList.Carrier_BriefName)
+		data['票制'] = str(businessList.Trade_Type)
+		data['装货日期'] = str(businessList.Load_Date)
+		data['牵引车号'] = str(businessList.Tractor_No)
+		data['槽车号'] = str(businessList.Tank_No)
+		data['驾驶员'] = str(businessList.Driver)
+		data['押运员'] = str(businessList.Supercargo)
+		data['手机号'] = str(businessList.Tele_No)
+		data['状态'] = str(businessList.State)
+		data['操作日期'] = str(businessList.Update_Date)
+		data['装气量（吨）'] = str(businessList.Load_QTY)
+		data['卸气量（吨）'] = str(businessList.Unload_QTY)
+		data['调度备注'] = str(businessList.Dispatch_Mark)
+		data['电商号'] = str(businessList.Electricity_Amount)
+		data['销售结算量（吨）'] = str(businessList.Sales_QTY)
+		data['采购结算量（吨）'] = str(businessList.PO_QTY)
+		data['物流结算量（吨）'] = str(businessList.Logistics_QTY)
+		data['销售价格函'] = str(businessList.Sales_Price_Letter)
+		data['销售单价'] = str(businessList.Sales_Price)
+		data['销售金额'] = str(businessList.Sales_Amount)
+		data['客户核对'] = str(businessList.Customer_CheckDate)
+		data['是否开票'] = str(businessList.Customer_IsBilling)
+		data['采购价格函'] = str(businessList.PO_Price_Letter)
+		data['采购单价'] = str(businessList.PO_Price)
+		data['采购金额'] = str(businessList.PO_Amount)
+		data['供应商核对'] = str(businessList.Supplier_CheckDate)
+		data['是否开票'] = str(businessList.Supplier_IsBilling)
+		data['物流价格函'] = str(businessList.Logistics_Price_Letter)
+		data['运输单价'] = str(businessList.Logistics_Price)
+		data['运费金额'] = str(businessList.Logistics_Amount)
+		data['承运商核对'] = str(businessList.Logistics_CheckDate)
+		data['是否开票'] = str(businessList.Logistics_IsBilling)
+		data['毛差'] = str(businessList.M_Deviation)
+		data['吨毛差'] = str(businessList.D_Deviation)
+		dataList.append(data)
+
+	return HttpResponse(str(dataList).replace("'",'"'))
+
+
 
 @login_required
 def orderData(req):

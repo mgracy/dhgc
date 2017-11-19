@@ -6,9 +6,9 @@ urlpatterns = [
 	url(r'^upload/$', views.uploadFile),
 	url(r'^basicdata/$', views.basicData),
 	url(r'^salesorder/$', views.salesOrder),
-	url(r'^salesorderCreate/$', views.salesOrderCreate),
 	url(r'^transportdata/$', views.transportData),
 	url(r'^changeorder/$', views.changeOrder),
+	url(r'^getorderinfo/$', views.getOrderInfo),
 	url(r'^orderdata/$', views.orderData),	
 	# 业务主数据
 	url(r'^master/$', views.master),

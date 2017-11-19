@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block main %}
 
-<form id="form1" method="post" action="/cghd/salesorderCreate/" >
+<form id="form1" method="post">
 	{% csrf_token %}
 {% if msg %}
 	<h2>{{msg}}</h2>
@@ -103,6 +103,12 @@
 <div id="divResult"></div>
 </form>
 <script>
+	var d = new Date();
+	var year = d.getFullYear();
+	var month = d.getMonth() + 1;
+	var day = d.getDate();
+	var now = year.toString() + ("00"+month.toString()).slice(-2) + ("00"+day.toString()).slice(-2);
+	console.log('now is ' + now);
 	var th = '<table class="table table-striped"> '+
 				'<tr> '+
 					'<th>销售单号</th> '+
@@ -129,9 +135,11 @@
 					'<th>备注</th> '+
 				'</tr> ';
 	 $("#btnCreate").click(function(){
-	 	var salesNo = "1111111";
+	 	$(this).prop('disabled', 'disabled');
+	 	$("#btnCreate").prop("disabled", "disabled")
+	 	var salesNo = now + "0001";
 	 	var area = "华南";
-	 	var clientProperty = "优";
+	 	var inOut = "优";
 	 	var clientName = $("#txtClientName").val();
 	 	var unloadAddress = $("#txtUnloadAddress").val();
 	 	var unloadDate = $("#txtUnloadDate").val();
@@ -155,7 +163,7 @@
 		tr = '<tr> '+
 					'<td>' + salesNo + '</td>' +
 					'<td>' + area + '</td>' +
-					'<td>' + clientProperty + '</td>' +
+					'<td>' + inOut + '</td>' +
 					'<td>' + clientName + '</td>' +
 					'<td>' + unloadAddress + '</td>' +
 					'<td>' + unloadDate + '</td>' +
@@ -181,11 +189,12 @@
 		}else{
 			table = th + tr + '</table';
 		}
-		
-		$("#hiddenData").val(table)
+
 		$("#divResult").html(table);	
+		$("#hiddenData").val($("#divResult").html());
 		$('#kv-success-1').html("创建订单成功");
-		$('#kv-success-1').fadeIn('show').fadeOut(5000);
+		$('#kv-success-1').fadeIn('show').fadeOut(3000);
+		$(this).prop('disabled', false);
 	});
 {# </form> #}
 
