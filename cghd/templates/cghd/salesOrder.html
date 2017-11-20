@@ -109,24 +109,43 @@
 <div id="divResult"></div>
 </form>
 <script>
-	var d = new Date();
-	var year = d.getFullYear();
-	var month = d.getMonth() + 1;
-	var day = d.getDate();
-	var sMonth = ("00"+month.toString()).slice(-2);
-	var sDay =  ("00"+day.toString()).slice(-2);
-	var now = year.toString() + sMonth + sDay;
-	console.log('now is ' + now);
-	var th = '<table class="table table-striped"> '+
+
+	
+	 $("#btnCreate").click(function(){
+	 	// 1.验证
+	 	if(!$.isNumeric($('#txtDGLPrice').val())){
+	 		alert("吨公里价只能是整数或小数");
+	 		$('#txtDGLPrice').focus().select();
+	 		return false;
+	 	}
+	 	// 2.业务 	
+	 	$("#btnCreate").prop("disabled", "disabled");
+	 	buildData();
+	 	$("#btnCreate").prop("disabled", false);
+	});
+{# </form> #}
+	function buildData(){
+		var d = new Date();
+		var year = d.getFullYear();
+		var month = d.getMonth() + 1;
+		var day = d.getDate();
+		var sMonth = ("00"+month.toString()).slice(-2);
+		var sDay =  ("00"+day.toString()).slice(-2);
+		var now = year.toString() + sMonth + sDay;
+
+		var th = '<table class="table table-striped"> '+
 				'<tr> '+
 					'<th>销售单号</th> '+
 					'<th>区域</th> '+
 					'<th>客户性质</th> '+
 					'<th>客户类型</th> '+
 					'<th>客户名称</th> '+
+					'<th style="display:none;">客户ID</th> '+
 					'<th>卸气地址</th> '+
 					'<th>卸货日期</th> '+
+					'<th>卸货时间</th> '+
 					'<th>供应商</th> '+
+					'<th style="display:none;">供应商ID</th> '+
 					'<th>气源</th> '+
 					'<th>票制</th> '+
 					'<th>毛利</th> '+
@@ -142,17 +161,18 @@
 					'<th>订单状态</th> '+
 					'<th>备注</th> '+
 				'</tr> ';
-	 $("#btnCreate").click(function(){
-	 	$(this).prop('disabled', 'disabled');
-	 	$("#btnCreate").prop("disabled", "disabled")
-	 	var salesNo = now + "0001";
+		
+		var salesNo = now + "0001";
 	 	var area = "华东";
 	 	var inOut = "外部";
+	 	var clientType = "城市燃气";
 	 	var clientName = $("#txtClientName").val();
+	 	var clientID = "Client00001";
 	 	var unloadAddress = $("#txtUnloadAddress").val();
 	 	var unloadDate = $("#txtUnloadDate").val();
 	 	var unloadTime = $("#txtUnloadTime").val();
 	 	var supplier = $("#txtSupplier").val();
+	 	var supplierID = "Supplier00001";
 	 	var sourceAddress = $("#txtSourceAddress").val();
 	 	var tradeType = $("#selTradeType").val();
 	 	
@@ -172,15 +192,22 @@
 	 	var status = "有效";
 	 	var remark = $("#txtDispatchMark").val();
 		var table = $("table") || [];
+		
+		if(table.length>0){
+			salesNo = now + ("0000" + $("table tr").length.toString()).slice(-4);
+		}
 		tr = '<tr> '+
 					'<td>' + salesNo + '</td>' +
 					'<td>' + area + '</td>' +
 					'<td>' + inOut + '</td>' +
+					'<td>' + clientType + '</td>' +
 					'<td>' + clientName + '</td>' +
+					'<td style="display:none;">' + clientID + '</td>' +
 					'<td>' + unloadAddress + '</td>' +
 					'<td>' + unloadDate + '</td>' +
 					'<td>' + unloadTime + '</td>' +
 					'<td>' + supplier + '</td>' +
+					'<td style="display:none;">' + supplierID + '</td>' +
 					'<td>' + sourceAddress + '</td>' +
 					'<td>' + tradeType + '</td>' +
 					'<td>' + gapPrice + '</td>' +
@@ -206,10 +233,7 @@
 		$("#hiddenData").val($("#divResult").html());
 		$('#kv-success-1').html("创建订单成功");
 		$('#kv-success-1').fadeIn('show').fadeOut(3000);
-		$(this).prop('disabled', false);
-	});
-{# </form> #}
-
+	}
 </script>
 
 

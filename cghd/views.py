@@ -36,70 +36,45 @@ def salesOrder(req):
 	user = req.user
 	if req.method == "POST":
 		msg = u"数据保存成功"
-		hiddenData = req.POST.get('hiddenData')
+		hiddenData = req.POST.get('hiddenData')		
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
 		print(hiddenData)
-		hiddenData = hiddenData.replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
 		trs = hiddenData.split('<tr>')
 		for i in range(2, len(trs)):
 			tr = trs[i].replace('</tr>','')
 			tds = tr.split('<td>')
+			print(tds)
+			print('----------------------------------------')
 			Business_Actual(
 				Order_No = tds[1],
 				Area = tds[2],
 				In_Out = tds[3],
-				C_Type = 'xxx',
-				C_ID = '666',
-				C_BriefName = tds[4],
-				Unload_Address = tds[5],
-				Unload_Date = tds[6],
-				Unload_Time = tds[7],
-				S_ID = 'sxxxx',
-				S_BriefName = tds[8],
-				Source_Address = tds[9],
-				Trade_Type = tds[10],
-				Gap_Price = tds[11],
-				GP_Price = tds[12],
-				CG_Price = tds[13],
-				Sales_Price = tds[14],
-				Transport_Price = tds[15],
-				DGL_Price = tds[16],
-				Transport_Distance = tds[17],
-				DFX_Cost = tds[18],
-				Carrier_ID = 'Carrixxxx',
-				Carrier_BriefName = 'CarriNamexxx',
-				# Load_Date = ,
-				# Tractor_No = ,
-				# Tank_No = tds[],
-				# Driver = tds[],
-				# Supercargo = tds[],
-				# Tele_No = tds[],
-				# Gap_Pounds = tds[],
-				# Load_QTY = tds[],
-				# Unload_QTY = tds[],
-				# Actual_PO_Amount = tds[],
-				# PO_Price = tds[],
-				# PO_QTY = tds[],
-				# Actual_Sales_Amount = tds[],
-				# Sales_Price = tds[],
-				# Sales_QTY = tds[],
-				# Actual_Logistics_Price = tds[],
-				# Logistics_Price = tds[],
-				# Logistics_QTY = tds[],
-				Salesmen = tds[19],
-				# M_Deviation = tds[],
-				# D_Deviation = tds[],
-				CreateDate = tds[20],
-				State = tds[21],
-				Dispatch_Mark = tds[22],
+				C_Type = tds[4],
+				C_ID = tds[5],
+				C_BriefName = tds[6],
+				Unload_Address = tds[7],
+				Unload_Date = tds[8],
+				Unload_Time = tds[9],
+				S_ID = tds[10],
+				S_BriefName = tds[11],
+				Source_Address = tds[12],
+				Trade_Type = tds[13],
+				Gap_Price = tds[14],
+				GP_Price = tds[15],
+				CG_Price = tds[16],
+				Sales_Price = tds[17],
+				Transport_Price = tds[18],
+				DGL_Price = tds[19],
+				Transport_Distance = tds[20],
+				DFX_Cost = tds[21],			
+				Salesmen = tds[22],
+				CreateDate = tds[23],
+				State = tds[24],
+				Dispatch_Mark = tds[25],
 				ip = get_client_ip(req),
 				Create_By = user.username
 			).save()
-
-
-		# for d in hiddenData:
-		# 	print(d)
-		# 	print('12')
-		print('000000000000000000000000000000')
+			
 		user = req.user
 		return render(req, 'cghd/salesOrder.html', {'user': user, 'msg': msg})
 	else:
