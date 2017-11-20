@@ -112,7 +112,7 @@
 						'</tr> ';
 			    for(var i=0; i<data.length; i++) {
 					table += '<tr> '+
-							'<td>' + data[i]["Order_No"] + '</td> '+
+							'<td class="dbclicktd">' + data[i]["Order_No"] + '</td> '+
 							'<td>' + data[i]["Area"] + '</td> '+
 							'<td>' + data[i]["In_Out"] + '</td> '+
 							// '<td>' + data[i]["C_ID"] + '</td> '+
@@ -152,6 +152,22 @@
 	 		}
 	 	})	   	
 	});
+
+	// $(".table").on("click",'.dbclicktd', function () { alert('adsfasdfasd');});
+	$(".table").delegate("td.dbclicktd", "click", function () {
+		alert(1);
+        var input = "<input type='text' id='temp' style='width:130px;' value=" + $(this).text() + " >";
+        $(this).text("");
+        $(this).append(input);
+        $("input#temp").focus();
+        $("input").blur(function () {
+            if ($(this).val() == "") {
+                $(this).remove();
+            } else {
+                $(this).closest("td").text($(this).val());
+            }
+        });
+    });
 {# </form> #}
 
 </script>
