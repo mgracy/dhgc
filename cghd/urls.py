@@ -12,6 +12,7 @@ urlpatterns = [
 	url(r'^orderdata/$', views.orderData),	
 	# 业务主数据
 	url(r'^master/$', views.master),
+	url(r'^creditdata/$', views.creditData),
 	url(r'^uploads/$', views.uploadedFile),
 	url(r'^supplier/$', views.supplier),
 	url(r'^uploadSupplier/$', views.uploadSupplier),

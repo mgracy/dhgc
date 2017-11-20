@@ -163,6 +163,9 @@ def basicData(req):
 def master(req):
 	return render(req, 'cghd/master.html', {'urlPath': req.path})
 
+@login_required
+def creditData(req):
+	return render(req, 'cghd/creditData.html', {'urlPath': req.path})
 
 def login(req):
 	if req.method == "POST":

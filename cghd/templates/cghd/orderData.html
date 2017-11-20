@@ -16,39 +16,39 @@
 	    <div class="row col-md-12" style="margin-bottom:5px">
 	      <div class="form-group input-group-sm col-xs-3 col-md-3 col-lg-3">
 	        <label for="txtSalesNo">销售单号</label>
-	        <input type="text" class="form-control" id="txtSalesNo">
+	        <input type="text" class="form-control" id="txtSalesNo"  name="txtSalesNo" >
 	      </div>
 	      <div class="form-group input-group-sm col-xs-3 col-md-3 col-lg-3">
 	        <label for="txtArea">区&nbsp;&nbsp;&nbsp;域</label>
-	        <input type="text" class="form-control" id="txtArea">
+	        <input type="text" class="form-control" id="txtArea" name="txtArea">
 	      </div>
 	      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
 	        <label for="txtSourceAddress">气源地址</label>
-	        <input type="text" class="form-control" id="txtSourceAddress">
+	        <input type="text" class="form-control" id="txtSourceAddress" name="txtSourceAddress">
 	      </div>
 	    </div>
 	    <div class="row col-md-12" style="margin-bottom:5px">
 	      <div class="form-group input-group-sm col-xs-3 col-md-3 col-lg-3">
 	        <label for="txtUnloadDate">卸货日期</label>
-	        <input type="date" class="form-control" id="txtUnloadDate">
+	        <input type="date" class="form-control" id="txtUnloadDate" name="txtUnloadDate">
 	      </div>
 	      <div class="form-group input-group-sm col-xs-3 col-md-3 col-lg-3">
 	        <label for="txtSales">销售员</label>
-	        <input type="text" class="form-control" id="txtSales">
+	        <input type="text" class="form-control" id="txtSales" name="txtSales">
 	      </div>
 	      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
 	        <label for="txtClientType">客户类型</label>
-	        <input type="text" class="form-control" id="txtClientType">
+	        <input type="text" class="form-control" id="txtClientType" name="txtClientType">
 	      </div>
 	    </div>
 	    <div class="row col-md-12" style="margin-bottom:0px">
 	      <div class="form-group input-group-sm col-xs-3 col-md-3 col-lg-3">
 	        <label for="txtSalesDate">下单日期</label>
-	        <input type="date" class="form-control" id="txtSalesDate">
+	        <input type="date" class="form-control" id="txtSalesDate" name="txtSalesDate">
 	      </div>
 	      <div class="form-group input-group-sm col-xs-3 col-md-3 col-lg-3">
 	        <label for="txtSupplier">供应商</label>
-	        <input type="text" class="form-control" id="txtSupplier">
+	        <input type="text" class="form-control" id="txtSupplier" name="txtSupplier">
 	      </div>
 	      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
 	        <input type="button" class="btn btn-primary col-xs-offset-2 col-md-offset-2 col-lg-offset-2 col-xs-6 col-md-6 col-lg-6" id="btnQuery" value="查询">
@@ -64,119 +64,87 @@
 
 <script>
 	 $("#btnQuery").click(function(){
+	 	var salesNo = $('#txtSalesNo').val();
+        var area = $('#txtArea').val();
+        var sourceAddress = $('#txtSourceAddress').val();
+        var unloadDate = $('#txtUnloadDate').val();
+        var salesMen = $('#txtSales').val();
+        var clientType = $('#txtClientType').val();
+        var salesDate = $('#txtSalesDate').val();
+        var supplier = $('#txtSupplier').val();
+
 	 	$.ajax({
 	 		url:'/cghd/getorderinfo',
 	 		type: 'get',
-	 		data: {'salesNo': '201711190001'},
+	 		data: {'salesNo': salesNo, 'area': area, 'sourceAddress': sourceAddress, 'unloadDate': unloadDate, 'salesMen': salesMen, 'clientType': clientType, 'salesDate': salesDate, 'supplier': supplier},
 	 		datatype: 'json',
 	 		success:function(data){
 				var data = eval('(' + data + ')');
 				var table = '<table class="table table-striped"> '+
 						'<tr> '+
-							'<th>订单号</th> '+
-							'<th>内外部</th> '+
-							'<th>所属区域</th> '+
-							'<th>客户ID</th> '+
+							'<th>销售单号</th> '+
+							'<th>区域</th> '+
+							'<th>客户性质</th> '+
+							'<th>客户类型</th> '+
 							'<th>客户名称</th> '+
-							'<th>卸气地</th> '+
 							'<th>卸货日期</th> '+
-							'<th>供应商ID</th> '+
+							'<th>卸货时间</th> '+
+							'<th>卸气地址</th> '+							
+							// '<th>供应商ID</th> '+
 							'<th>供应商</th> '+
 							'<th>气源地</th> '+
-							'<th>承运商ID</th> '+
-							'<th>承运公司</th> '+
 							'<th>票制</th> '+
+							// '<th>承运商ID</th> '+
+							'<th>承运公司</th> '+							
 							'<th>装货日期</th> '+
 							'<th>牵引车号</th> '+
 							'<th>槽车号</th> '+
 							'<th>驾驶员</th> '+
 							'<th>押运员</th> '+
 							'<th>手机号</th> '+
-							'<th>状态</th> '+
-							'<th>操作日期</th> '+
-							'<th>装气量（吨）</th> '+
-							'<th>卸气量（吨）</th> '+
-							'<th>磅差（吨）</th> '+
-							'<th>调度备注</th> '+
-							'<th>电商号</th> '+
-							'<th>销售结算量（吨）</th> '+
-							'<th>采购结算量（吨）</th> '+
-							'<th>物流结算量（吨）</th> '+
-							'<th>销售价格函</th> '+
-							'<th>销售单价</th> '+
-							'<th>销售金额</th> '+
-							'<th>客户核对</th> '+
-							'<th>是否开票</th> '+
-							'<th>采购价格函</th> '+
-							'<th>采购单价</th> '+
-							'<th>采购金额</th> '+
-							'<th>供应商核对</th> '+
-							'<th>是否开票</th> '+
-							'<th>物流价格函</th> '+
-							'<th>运输单价</th> '+
-							'<th>运费金额</th> '+
-							'<th>承运商核对</th> '+
-							'<th>是否开票</th> '+
-							'<th>毛差</th> '+
-							'<th>吨毛差</th> '+
+							'<th>磅差</th> '+
+							'<th>装气量</th> '+
+							'<th>卸气量</th> '+
+							'<th>销售员</th> '+
+							'<th>下单日期</th> '+
+							'<th>订单状态</th> '+							
 							'<th>备注</th> '+
 						'</tr> ';
 			    for(var i=0; i<data.length; i++) {
 					table += '<tr> '+
-							'<td>' + data[i]["订单号"] + '</td> '+
-							'<td>' + data[i]["内外部"] + '</td> '+
-							'<td>' + data[i]["所属区域"] + '</td> '+
-							'<td>' + data[i]["客户ID"] + '</td> '+
-							'<td>' + data[i]["客户名称"] + '</td> '+
-							'<td>' + data[i]["卸气地"] + '</td> '+
-							'<td>' + data[i]["卸货日期"] + '</td> '+
-							'<td>' + data[i]["供应商ID"] + '</td> '+
-							'<td>' + data[i]["供应商"] + '</td> '+
-							'<td>' + data[i]["气源地"] + '</td> '+
-							'<td>' + data[i]["承运商ID"] + '</td> '+
-							'<td>' + data[i]["承运公司"] + '</td> '+
-							'<td>' + data[i]["票制"] + '</td> '+
-							'<td>' + data[i]["装货日期"] + '</td> '+
-							'<td>' + data[i]["牵引车号"] + '</td> '+
-							'<td>' + data[i]["槽车号"] + '</td> '+
-							'<td>' + data[i]["驾驶员"] + '</td> '+
-							'<td>' + data[i]["押运员"] + '</td> '+
-							'<td>' + data[i]["手机号"] + '</td> '+
-							'<td>' + data[i]["状态"] + '</td> '+
-							'<td>' + data[i]["操作日期"] + '</td> '+
-							'<td>' + data[i]["装气量（吨）"] + '</td> '+
-							'<td>' + data[i]["卸气量（吨）"] + '</td> '+
-							'<td>' + data[i]["磅差（吨）"] + '</td> '+
-							'<td>' + data[i]["调度备注"] + '</td> '+
-							'<td>' + data[i]["电商号"] + '</td> '+
-							'<td>' + data[i]["销售结算量（吨）"] + '</td> '+
-							'<td>' + data[i]["采购结算量（吨）"] + '</td> '+
-							'<td>' + data[i]["物流结算量（吨）"] + '</td> '+
-							'<td>' + data[i]["销售价格函"] + '</td> '+
-							'<td>' + data[i]["销售单价"] + '</td> '+
-							'<td>' + data[i]["销售金额"] + '</td> '+
-							'<td>' + data[i]["客户核对"] + '</td> '+
-							'<td>' + data[i]["是否开票"] + '</td> '+
-							'<td>' + data[i]["采购价格函"] + '</td> '+
-							'<td>' + data[i]["采购单价"] + '</td> '+
-							'<td>' + data[i]["采购金额"] + '</td> '+
-							'<td>' + data[i]["供应商核对"] + '</td> '+
-							'<td>' + data[i]["是否开票"] + '</td> '+
-							'<td>' + data[i]["物流价格函"] + '</td> '+
-							'<td>' + data[i]["运输单价"] + '</td> '+
-							'<td>' + data[i]["运费金额"] + '</td> '+
-							'<td>' + data[i]["承运商核对"] + '</td> '+
-							'<td>' + data[i]["是否开票"] + '</td> '+
-							'<td>' + data[i]["毛差"] + '</td> '+
-							'<td>' + data[i]["吨毛差"] + '</td> '+
-							'<td>' + data[i]["备注"] + '</td> '+
+							'<td>' + data[i]["Order_No"] + '</td> '+
+							'<td>' + data[i]["Area"] + '</td> '+
+							'<td>' + data[i]["In_Out"] + '</td> '+
+							// '<td>' + data[i]["C_ID"] + '</td> '+
+							'<td>' + data[i]["C_Type"] + '</td> '+
+							'<td>' + data[i]["C_BriefName"] + '</td> '+
+							'<td>' + data[i]["Unload_Date"] + '</td> '+
+							'<td>' + data[i]["Unload_Time"] + '</td> '+
+							'<td>' + data[i]["Unload_Address"] + '</td> '+
+							'<td>' + data[i]["S_BriefName"] + '</td> '+
+							'<td>' + data[i]["Source_Address"] + '</td> '+
+							'<td>' + data[i]["Trade_Type"] + '</td> '+
+							'<td>' + data[i]["Carrier_BriefName"] + '</td> '+
+							'<td>' + data[i]["Load_Date"] + '</td> '+
+							'<td>' + data[i]["Tractor_No"] + '</td> '+
+							'<td>' + data[i]["Tank_No"] + '</td> '+
+							'<td>' + data[i]["Driver"] + '</td> '+
+							'<td>' + data[i]["Supercargo"] + '</td> '+
+							'<td>' + data[i]["Tele_No"] + '</td> '+
+							'<td>' + data[i]["Gap_Pounds"] + '</td> '+
+							'<td>' + data[i]["Load_QTY"] + '</td> '+
+							'<td>' + data[i]["Unload_QTY"] + '</td> '+
+							'<td>' + data[i]["Salesmen"] + '</td> '+
+							'<td>' + data[i]["Create_Date"] + '</td> '+
+							'<td>' + data[i]["State"] + '</td> '+
+							'<td>' + data[i]["Dispatch_Mark"] + '</td> '+
 						'</tr> ';
 				}
 
 				table += '</table';
 							
 				$("#divResult").html(table);	
-				$('#kv-success-1').html("查询成功");
+				$('#kv-success-1').html("查询成功, 共有 " + data.length + " 条记录");
 				$('#kv-success-1').fadeIn('show').fadeOut(3000);
 	 		},
 	 		error:function(err){
