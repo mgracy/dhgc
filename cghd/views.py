@@ -92,12 +92,37 @@ def changeOrder(req):
 
 @login_required
 def getOrderInfo(req):
-	# businessLists = Business_Actual.objects.all()
-	# date = req.GET.get('date')
-	# area = req.GET.get('area')
-	# clientName = req.GET.get('clientName')
+	salesNo = req.GET.get('salesNo')
+	area = req.GET.get('area')
+	sourceAddress = req.GET.get('sourceAddress')
+	unloadDate = req.GET.get('unloadDate')
+	salesMen = req.GET.get('salesMen')
+	clientType = req.GET.get('clientType')
+	salesDate = req.GET.get('salesDate')
+	supplier = req.GET.get('supplier')
+
+	sFilter = ""
+	if salesNo:
+		sFilter += "Order_No='" + salesNo + "',"
+	if area:
+		sFilter += "Area='" + area + "',"
+	if sourceAddress:
+		sFilter += "Source_Address='" + sourceAddress + "',"
+	if unloadDate:
+		sFilter += "Unload_Date='" + unloadDate + "',"
+	if salesMen:
+		sFilter += "Salesmen='" + salesMen + "',"
+	if clientType:
+		sFilter += "C_Type='" + clientType + "',"
+	if salesDate:
+		sFilter += "Create_Date='" + salesDate + "',"
+	if supplier:
+		sFilter += "S_BriefName='" + supplier + "'"	
+
+	print(sFilter)
+	print('uuuuuuuuuuuuuuuuuuu')
 	# businessLists = Business.objects.filter(Unload_Date=date).filter(Area=area).filter(C_BriefName=clientName)
-	businessLists = Business_Actual.objects.all()
+	businessLists = Business_Actual.objects.filter(sFilter)
 	print('len--{}'.format(len(businessLists)))
 	print(type(businessLists))
 	dataList = []
