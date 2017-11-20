@@ -51,7 +51,13 @@
 	      </div>
 	      <div class="form-group input-group-sm col-xs-3 col-md-3 col-lg-3">
 	        <label for="txtTradeType">票制&nbsp;&nbsp;&nbsp;</label>
-	        <input type="text" class="form-control" id="txtTradeType">
+	        <select id="selTradeType" class="form-control">
+	        	<option value="">请选择</option>
+	        	<option value="一票">一票</option>
+	        	<option value="两票">两票</option>
+	        	<option value="自提">自提</option>
+	        </select>
+	        {# <input type="text" class="form-control" id="txtTradeType"> #}
 	      </div>
 	      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
 	        <label for="txtDGLPrice">吨公里/运价</label>
@@ -69,7 +75,7 @@
 	      </div>
 	      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
 	        <label for="txtYJDistance">运输距离&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-	        <input type="text" class="form-control" id="txtYJDistance">
+	        <input type="number" class="form-control" id="txtYJDistance">
 	      </div>
 	    </div>
 	    <div class="row col-md-12" style="margin-bottom:0px">
@@ -83,10 +89,10 @@
 	      </div>
 	      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
 	        <label for="txtDFXCost">吨分卸费&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-	        <input type="text" class="form-control" id="txtDFXCost">
+	        <input type="number" class="form-control" id="txtDFXCost">
 	      </div>
           <div class="col-xs-offset-10 col-md-offset-10 col-lg-offset-10">
-	        <input type="button" id="btnCreate" class="btn btn-lg btn-primary" value="创建订单">
+	        <input tabindex="1" type="button" id="btnCreate" class="btn btn-lg btn-primary" value="创建订单">
 	      </div>
 	    </div>
 		<div class="row col-md-12" style="margin-top:-10px; margin-bottom:5px;">
@@ -107,7 +113,9 @@
 	var year = d.getFullYear();
 	var month = d.getMonth() + 1;
 	var day = d.getDate();
-	var now = year.toString() + ("00"+month.toString()).slice(-2) + ("00"+day.toString()).slice(-2);
+	var sMonth = ("00"+month.toString()).slice(-2);
+	var sDay =  ("00"+day.toString()).slice(-2);
+	var now = year.toString() + sMonth + sDay;
 	console.log('now is ' + now);
 	var th = '<table class="table table-striped"> '+
 				'<tr> '+
@@ -138,25 +146,29 @@
 	 	$(this).prop('disabled', 'disabled');
 	 	$("#btnCreate").prop("disabled", "disabled")
 	 	var salesNo = now + "0001";
-	 	var area = "华南";
-	 	var inOut = "优";
+	 	var area = "华东";
+	 	var inOut = "外部";
 	 	var clientName = $("#txtClientName").val();
 	 	var unloadAddress = $("#txtUnloadAddress").val();
 	 	var unloadDate = $("#txtUnloadDate").val();
 	 	var unloadTime = $("#txtUnloadTime").val();
 	 	var supplier = $("#txtSupplier").val();
 	 	var sourceAddress = $("#txtSourceAddress").val();
-	 	var tradeType = $("#txtTradeType").val();
-	 	var gapPrice = 100;
+	 	var tradeType = $("#selTradeType").val();
+	 	
 	 	var gpPrice = $("#txtGPPrice").val();
 	 	var poPrice = $("#txtPOPrice").val();
 	 	var salesPrice = $("#txtSalesPrice").val();
-	 	var ysPrice = 100;
+	 	
 	 	var dglPrice = $("#txtDGLPrice").val();
 	 	var yjDistance = $("#txtYJDistance").val();
 	 	var dfxCost = $("#txtDFXCost").val();
+	 	// 运输单价=（吨公里价*运输距离）+吨分卸费
+	 	var ysPrice = (dglPrice * yjDistance) + Number(dfxCost) ;
+	 	// 毛利 = 销售单价-采购单价-运输单价
+	 	var gapPrice = salesPrice - poPrice - ysPrice;
 	 	var sales = $("#txtSales").val();
-	 	var createDate = "2017-11-18";
+	 	var createDate = year.toString() + "-" + sMonth + "-" + sDay;
 	 	var status = "有效";
 	 	var remark = $("#txtDispatchMark").val();
 		var table = $("table") || [];

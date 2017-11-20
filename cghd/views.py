@@ -90,7 +90,9 @@ def salesOrder(req):
 				# D_Deviation = tds[],
 				CreateDate = tds[20],
 				State = tds[21],
-				Dispatch_Mark = tds[22]
+				Dispatch_Mark = tds[22],
+				ip = get_client_ip(req),
+				Create_By = user.username
 			).save()
 
 
@@ -475,3 +477,11 @@ class UserForm(forms.Form):
 class UserFormLogin(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
