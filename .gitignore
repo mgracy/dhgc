@@ -18,3 +18,4 @@ config.py
 *.xls
 base.html
 models.py
+.gitattributes
