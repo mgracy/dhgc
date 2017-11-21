@@ -91,25 +91,30 @@
 							'<th>客户名称</th>'+
 							'<th>卸货日期</th>'+
 							'<th>卸货时间</th>'+
-							'<th>卸气地址</th>'+							
+							'<th>卸货地址</th>'+							
 							// '<th>供应商ID</th>'+
 							'<th>供应商</th>'+
 							'<th>气源地</th>'+
 							'<th>票制</th>'+
 							// '<th>承运商ID</th>'+
-							'<th>承运公司</th>'+							
+							'<th>毛利</th>'+							
+							'<th>挂牌价格</th>'+
+							'<th>采购单价</th>'+
+							'<th>销售单价</th>'+
+							'<th>运输单价</th>'+
+							'<th>吨公里价</th>'+
+							'<th>运输距离</th>'+
+							'<th>承运公司</th>'+
 							'<th>装货日期</th>'+
 							'<th>牵引车号</th>'+
-							'<th>槽车号</th>'+
+							'<th>槽罐车号</th>'+
 							'<th>驾驶员</th>'+
+							'<th>驾驶手机</th>'+
 							'<th>押运员</th>'+
-							'<th>手机号</th>'+
-							'<th>磅差</th>'+
-							'<th>装气量</th>'+
-							'<th>卸气量</th>'+
+							'<th>司押手机</th>'+
 							'<th>销售员</th>'+
 							'<th>下单日期</th>'+
-							'<th>订单状态</th>'+							
+							'<th class="dbclicktd">订单状态</th>'+							
 							'<th>备注</th>'+
 							'<th style="display:none;">id</th>'+
 						'</tr> ';
@@ -127,19 +132,24 @@
 							'<td>' + data[i]["S_BriefName"] + '</td>'+
 							'<td>' + data[i]["Source_Address"] + '</td>'+
 							'<td>' + data[i]["Trade_Type"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Carrier_BriefName"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Load_Date"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Tractor_No"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Tank_No"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Driver"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Supercargo"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Tele_No"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Gap_Pounds"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Load_QTY"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Unload_QTY"] + '</td>'+
+							'<td>' + data[i]["Gap_Price"] + '</td>'+
+							'<td>' + data[i]["GP_Price"] + '</td>'+
+							'<td>' + data[i]["CG_Price"] + '</td>'+
+							'<td>' + data[i]["Sales_Price"] + '</td>'+
+							'<td>' + data[i]["Transport_Price"] + '</td>'+
+							'<td>' + data[i]["DGL_Price"] + '</td>'+
+							'<td>' + data[i]["Transport_Distance"] + '</td>'+
+							'<td>' + data[i]["Carrier_BriefName"] + '</td>'+
+							'<td>' + data[i]["Load_Date"] + '</td>'+
+							'<td>' + data[i]["Tractor_No"] + '</td>'+
+							'<td>' + data[i]["Tank_No"] + '</td>'+
+							'<td>' + data[i]["Driver"] + '</td>'+
+							'<td>' + data[i]["Tele_No"] + '</td>'+
+							'<td>' + data[i]["Supercargo"] + '</td>'+
+							'<td>' + data[i]["Tele_No"] + '</td>'+
 							'<td>' + data[i]["Salesmen"] + '</td>'+
 							'<td>' + data[i]["Create_Date"] + '</td>'+
-							'<td>' + data[i]["State"] + '</td>'+
+							'<td class="dbclicktd">' + data[i]["State"] + '</td>'+
 							'<td>' + data[i]["Dispatch_Mark"] + '</td>'+
 							'<td style="display:none;">' + data[i]["id"] + '</td>'+
 						'</tr>';
