@@ -12,7 +12,7 @@
 <div class="form">
 	<div class="form-group">
 		<input type="button" id="btnCancel" class="btn btn-warning" value="放弃">
-		<input type="submit" class="btn btn-warning" value="提交">
+		<input type="button" id="btnSubmit" class="btn btn-warning" value="提交">
 		<input type="hidden" id="hiddenData" name="hiddenData">
 	</div>
 	<div class="form-inline">
@@ -101,16 +101,15 @@
 	        <input type="text" class="form-control" style="width:83%;" id="txtDispatchMark">
 	      </div>
 	    </div>
-	</div>	
+	</div>
+	<div>&nbsp;</div>
 </div>
 
-<div id="kv-error-1" style="margin-top:10px;display:block;">&nbsp;</div>
-<div id="kv-success-1" class="alert alert-success" style="margin-top:10px;display:none;"></div>
+<div id="kv-error-1" class="alert alert-warning" style="margin-top:10px;display:none;" role="alert"></div>
+<div id="kv-success-1" class="alert alert-success" style="margin-top:10px;display:none;" role="alert"></div>
 <div id="divResult"></div>
 </form>
-<script>
-
-	
+<script>	
 	 $("#btnCreate").click(function(){
 	 	// 1.验证
 	 	if(!$.isNumeric($('#txtDGLPrice').val())){
@@ -123,7 +122,6 @@
 	 	buildData();
 	 	$("#btnCreate").prop("disabled", false);
 	});
-{# </form> #}
 	function buildData(){
 		var d = new Date();
 		var year = d.getFullYear();
@@ -235,8 +233,5 @@
 		$('#kv-success-1').fadeIn('show').fadeOut(3000);
 	}
 </script>
-
-
-{# </form> #}
 
 {% endblock %}
