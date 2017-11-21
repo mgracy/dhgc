@@ -102,27 +102,45 @@ def getOrderInfo(req):
 	supplier = req.GET.get('supplier')
 
 	sFilter = ""
-	if salesNo:
-		sFilter += "Order_No='" + salesNo + "',"
-	if area:
-		sFilter += "Area='" + area + "',"
-	if sourceAddress:
-		sFilter += "Source_Address='" + sourceAddress + "',"
-	if unloadDate:
-		sFilter += "Unload_Date='" + unloadDate + "',"
-	if salesMen:
-		sFilter += "Salesmen='" + salesMen + "',"
-	if clientType:
-		sFilter += "C_Type='" + clientType + "',"
-	if salesDate:
-		sFilter += "Create_Date='" + salesDate + "',"
-	if supplier:
-		sFilter += "S_BriefName='" + supplier + "'"	
+	# if salesNo:
+	# 	sFilter += "Order_No='" + salesNo + "',"
+	# if area:
+	# 	sFilter += "Area='" + area + "',"
+	# if sourceAddress:
+	# 	sFilter += "Source_Address='" + sourceAddress + "',"
+	# if unloadDate:
+	# 	sFilter += "Unload_Date='" + unloadDate + "',"
+	# if salesMen:
+	# 	sFilter += "Salesmen='" + salesMen + "',"
+	# if clientType:
+	# 	sFilter += "C_Type='" + clientType + "',"
+	# if salesDate:
+	# 	sFilter += "Create_Date='" + salesDate + "',"
+	# if supplier:
+	# 	sFilter += "S_BriefName='" + supplier + "'"	
 
 	print(sFilter)
 	print('uuuuuuuuuuuuuuuuuuu')
 	# businessLists = Business.objects.filter(Unload_Date=date).filter(Area=area).filter(C_BriefName=clientName)
-	businessLists = Business_Actual.objects.filter(sFilter)
+	businessLists = Business_Actual.objects.all()
+	
+	if salesNo:
+		businessLists = businessLists.filter(Order_No=salesNo)
+	if area:
+		businessLists = businessLists.filter(Area=area)
+	if sourceAddress:
+		businessLists = businessLists.filter(Source_Address=sourceAddress)
+	if unloadDate:
+		businessLists = businessLists.filter(Unload_Date=unloadDate)
+	if salesMen:
+		businessLists = businessLists.filter(Salesmen=salesMen)
+	if clientType:
+		businessLists = businessLists.filter(C_Type=clientType)
+	if salesDate:
+		businessLists = businessLists.filter(Create_Date=salesDate)
+	if supplier:
+		businessLists = businessLists.filter(S_BriefName=supplier)
+
 	print('len--{}'.format(len(businessLists)))
 	print(type(businessLists))
 	dataList = []
