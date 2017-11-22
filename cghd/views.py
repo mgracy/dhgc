@@ -304,7 +304,7 @@ def orderData(req):
 				fLogisticsPrice= 0
 				fMDeviation = 0
 				fDDeviation = 0;
-				loger.debug('fSalesQty: {}, error: {}'.format(fSalesQty, e))		
+				logger.debug('fSalesQty: {}, error: {}'.format(fSalesQty, e))		
 
 			bid = tds[33]
 			logger.debug(u'用户{}修改id={}'.format(user.username,bid))
