@@ -259,7 +259,7 @@ def getOrderInfo(req):
 		# data['Actual_Logistics_Amount'] = str(businessList.Actual_Logistics_Amount)
 		data['Logistics_Price'] = str(businessList.Logistics_Price)
 		data['Logistics_QTY'] = str(businessList.Logistics_QTY)
-		data['Actual_Logistics_Price'] = str(businessList.Actual_Logistics_Price)
+		data['Actual_Logistics_Amount'] = str(businessList.Actual_Logistics_Amount)
 		data['Salesmen'] = str(businessList.Salesmen)
 		data['M_Deviation'] = str(businessList.M_Deviation)
 		data['D_Deviation'] = str(businessList.D_Deviation)
