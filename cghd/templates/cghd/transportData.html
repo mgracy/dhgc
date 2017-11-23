@@ -64,7 +64,31 @@
 </form>
 
 <script>
-	$(document).ready(function(){	    	
+	$(document).ready(function(){
+		var val1, val2 = 0;
+		var aFlag, bFlag = false;
+		$('#divResult').on('change', '.table tr td.dbclicktd', function(){
+			if($(this).hasClass('m1')){
+				val1 = $(this).find('input:text').val();
+				aFlag = true;
+				var m2 = $(this).next('td.m2');
+				if($.isNumeric($(m2).text())){
+					val2 = Number($(m2).text());
+					bFlag = true;
+				}
+			}else if($(this).hasClass('m2')){
+				val2 = $(this).find('input:text').val();
+				bFlag = true;
+				var m1 = $(this).prev('td.m1');
+				if($.isNumeric($(m1).text())){
+					val1 = Number($(m1).text());
+					aFlag = true;
+				}
+			}
+			if(aFlag && bFlag)
+				$(this).prevAll('td.m0').text((Number(val1)-Number(val2)).toFixed(2));
+		});
+ 	
 		$("#btnQuery").click(function(){
 			var salesNo = $('#txtSalesNo').val();
 			var area = $('#txtArea').val();
@@ -104,7 +128,7 @@
 							'<th class="dbclicktd">驾驶员</th>'+
 							'<th class="dbclicktd">押运员</th>'+
 							'<th class="dbclicktd">手机号</th>'+
-							'<th class="dbclicktd">磅差</th>'+
+							'<th>磅差</th>'+
 							'<th class="dbclicktd">装气量</th>'+
 							'<th class="dbclicktd">卸气量</th>'+
 							'<th>销售员</th>'+
@@ -134,9 +158,9 @@
 							'<td class="dbclicktd">' + data[i]["Driver"] + '</td>'+
 							'<td class="dbclicktd">' + data[i]["Supercargo"] + '</td>'+
 							'<td class="dbclicktd">' + data[i]["Tele_No"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Gap_Pounds"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Load_QTY"] + '</td>'+
-							'<td class="dbclicktd">' + data[i]["Unload_QTY"] + '</td>'+
+							'<td class="m0">' + data[i]["Gap_Pounds"] + '</td>'+
+							'<td class="dbclicktd m1">' + data[i]["Load_QTY"] + '</td>'+
+							'<td class="dbclicktd m2">' + data[i]["Unload_QTY"] + '</td>'+
 							'<td>' + data[i]["Salesmen"] + '</td>'+
 							'<td>' + data[i]["Create_Date"] + '</td>'+
 							'<td>' + data[i]["State"] + '</td>'+
@@ -147,7 +171,7 @@
 
 				table += '</table';
 							
-				$("#divResult").html(table);	
+				$("#divResult").html(table);
 				$('#kv-success-1').html("查询成功, 共有 " + data.length + " 条记录");
 				$('#kv-success-1').fadeIn('show').fadeOut(3000);
 				},

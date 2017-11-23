@@ -10,12 +10,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 import hashlib
 import datetime
+import logging
 # from django.template import RequestContext
 
 # Create your views here.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 print('---------{}'.format(BASE_DIR))
 DATE_FORMAT = '%Y-%m-%d'
+logger = logging.getLogger(__name__)
 
 def t2(req):
 	user = req.user
@@ -36,8 +38,8 @@ def salesOrder(req):
 	user = req.user
 	if req.method == "POST":
 		msg = u"数据保存成功"
-		hiddenData = req.POST.get('hiddenData')		
-		hiddenData = hiddenData.replace(' style="display:none;"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		hiddenData = req.POST.get('hiddenData')
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')		
 		print(hiddenData)
 		trs = hiddenData.split('<tr>')
 		for i in range(2, len(trs)):
@@ -71,24 +73,95 @@ def salesOrder(req):
 				Create_Date = tds[23],
 				State = tds[24],
 				Dispatch_Mark = tds[25],
-				ip = get_client_ip(req),
+				Create_Ip = get_client_ip(req),
 				Create_By = user.username
 			).save()
-
-		user = req.user
+		
 		return render(req, 'cghd/salesOrder.html', {'user': user, 'msg': msg})
 	else:
-		return render(req, 'cghd/salesOrder.html', {'user': user})
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def transportData(req):
 	user = req.user
-	return render(req, 'cghd/transportData.html', {'user': user})
+	if req.method == "POST":
+		msg = u"维护运输数据成功"
+		hiddenData = req.POST.get('hiddenData')		
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="m0"','').replace(' m1','').replace(' m2','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		# print(hiddenData)
+		trs = hiddenData.split('<tr>')
+		for i in range(2, len(trs)):
+			tr = trs[i].replace('</tr>','')
+			tds = tr.split('<td>')
+			print(tds)
+			carrierBriefName = tds[12]
+			loadDate = tds[13]
+			tractorNo = tds[14]
+			tankNo = tds[15]
+			driver = tds[16]
+			supercargo = tds[17]
+			teleNo = tds[18]
+			gapPounds = tds[19]
+			loadQTY = tds[20]
+			unloadQTY = tds[21]
+			bid = tds[26]
+			logger.debug(u'用户{}修改id={}记录如下:\ncarrierBriefName: {}\tloadDate: {}\ttractorNo: {}\ttankNo: {}\tdriver: {}\tsupercargo: {}\tteleNo: {}\tgapPounds: {}\tloadQTY: {}\tunloadQTY: {}'.format(user.username,bid,carrierBriefName,loadDate,tractorNo,tankNo,driver,supercargo,teleNo,gapPounds,loadQTY,unloadQTY))
+			print('----------------------------------------')
+			try:
+				pass
+				Business_Actual.objects.filter(id=bid).update(
+					Carrier_BriefName=carrierBriefName,
+					Load_Date=loadDate,
+					Tractor_No=tractorNo,
+					Tank_No=tankNo,
+					Driver=driver,
+					Supercargo=supercargo,
+					Tele_No=teleNo,
+					Gap_Pounds=gapPounds,
+					Load_QTY=loadQTY,
+					Unload_QTY=unloadQTY,
+					Update_By=user.username,
+					Update_Ip=get_client_ip(req),
+					Update_Date=datetime.datetime.now()				
+					)
+			except Exception as e:
+				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
+
+		return HttpResponse('<h1>{}</h1>'.format(msg))
+	else:
+		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def changeOrder(req):
 	user = req.user
-	return render(req, 'cghd/changeOrder.html', {'user': user})
+	if req.method == "POST":
+		msg = u"变更订单数据成功"
+		hiddenData = req.POST.get('hiddenData')		
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		# print(hiddenData)
+		trs = hiddenData.split('<tr>')
+		for i in range(2, len(trs)):
+			tr = trs[i].replace('</tr>','')
+			tds = tr.split('<td>')
+			print(tds)
+			state = tds[29]
+			bid = tds[31]
+			logger.debug(u'用户{}修改id={}记录如下:State: {}'.format(user.username,bid,state))
+			print('----------------------------------------')
+			try:
+				pass
+				Business_Actual.objects.filter(id=bid).update(					
+					State=state,
+					Update_By=user.username,
+					Update_Ip=get_client_ip(req),
+					Update_Date=datetime.datetime.now()				
+					)
+			except Exception as e:
+				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
+
+		return HttpResponse('<h1>{}</h1>'.format(msg))
+
+	return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def getOrderInfo(req):
@@ -161,6 +234,12 @@ def getOrderInfo(req):
 		data['Source_Address'] = str(businessList.Source_Address)
 		data['Carrier_ID'] = str(businessList.Carrier_ID)
 		data['Carrier_BriefName'] = str(businessList.Carrier_BriefName)
+		data['Gap_Price'] = str(businessList.Gap_Price)
+		data['GP_Price'] = str(businessList.GP_Price)
+		data['CG_Price'] = str(businessList.CG_Price)
+		data['Transport_Price'] = str(businessList.Transport_Price)
+		data['DGL_Price'] = str(businessList.DGL_Price)
+		data['Transport_Distance'] = str(businessList.Transport_Distance)
 		data['Trade_Type'] = str(businessList.Trade_Type)
 		data['Load_Date'] = str(businessList.Load_Date)
 		data['Tractor_No'] = str(businessList.Tractor_No)
@@ -187,6 +266,7 @@ def getOrderInfo(req):
 		data['State'] = str(businessList.State)
 		data['Create_Date'] = str(businessList.Create_Date)
 		data['Dispatch_Mark'] = str(businessList.Dispatch_Mark)
+		data['id'] = str(businessList.id)
 		dataList.append(data)
 
 	return HttpResponse(str(dataList).replace("'",'"'))
@@ -196,19 +276,79 @@ def getOrderInfo(req):
 @login_required
 def orderData(req):
 	user = req.user
-	return render(req, 'cghd/orderData.html', {'user': user})
+	if req.method == "POST":
+		msg = u"维护订单数据成功"
+		hiddenData = req.POST.get('hiddenData')		
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		print(hiddenData)
+		print('--------------')
+		trs = hiddenData.split('<tr>')
+		for i in range(2, len(trs)):
+			tr = trs[i].replace('</tr>','')
+			tds = tr.split('<td>')
+			try:
+				fPoQty= int(tds[23])
+				fPoPrice= int(tds[24])
+				fSalesQty= int(tds[25])
+				fSalesPrice= int(tds[26])
+				fLogisticsQty= int(tds[27])
+				fLogisticsPrice= int(tds[28])
+				fMDeviation = fSalesPrice*fSalesQty -fPoPrice*fPoQty -fLogisticsPrice*fLogisticsQty;
+				fDDeviation = int(fMDeviation)/int(fSalesQty)
+			except Exception as e:
+				fPoQty= 0
+				fPoPrice= 0
+				fSalesQty= 0
+				fSalesPrice= 0
+				fLogisticsQty= 0
+				fLogisticsPrice= 0
+				fMDeviation = 0
+				fDDeviation = 0;
+				loger.debug('fSalesQty: {}, error: {}'.format(fSalesQty, e))		
+
+			bid = tds[33]
+			logger.debug(u'用户{}修改id={}'.format(user.username,bid))
+			print('----------------------------------------')
+			try:
+				pass
+				Business_Actual.objects.filter(id=bid).update(					
+					PO_QTY=fPoQty,
+					PO_Price=fPoPrice,
+					Sales_QTY=fSalesQty,
+					Sales_Price=fSalesPrice,
+					Logistics_QTY=fLogisticsQty,
+					Logistics_Price=fLogisticsPrice,
+					Actual_Logistics_Amount=fLogisticsPrice*fLogisticsQty,
+					Actual_Sales_Amount=fSalesPrice*fSalesQty,
+					Actual_PO_Amount=fPoPrice*fPoQty,
+					M_Deviation=fMDeviation,
+					D_Deviation=fDDeviation,					
+					Update_By=user.username,
+					Update_Ip=get_client_ip(req),
+					Update_Date=datetime.datetime.now()				
+					)
+			except Exception as e:
+				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
+
+		return HttpResponse('<h1>{}</h1>'.format(msg))
+
+	return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path})
+
 
 @login_required
 def basicData(req):
-	return render(req, 'cghd/basicData.html', {'urlPath': req.path})
+	user = req.user
+	return render(req, 'cghd/basicData.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def master(req):
-	return render(req, 'cghd/master.html', {'urlPath': req.path})
+	user = req.user
+	return render(req, 'cghd/master.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def creditData(req):
-	return render(req, 'cghd/creditData.html', {'urlPath': req.path})
+	user = req.user
+	return render(req, 'cghd/creditData.html', {'user': user, 'urlPath': req.path})
 
 def login(req):
 	if req.method == "POST":
@@ -229,19 +369,22 @@ def login(req):
 
 @login_required
 def supplier(req):
-	return render(req, 'cghd/supplier.html', {'urlPath': req.path})
+	user = req.user
+	return render(req, 'cghd/supplier.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def ar(req):
-	return render(req, 'cghd/ar.html', {'urlPath': req.path})
+	user = req.user
+	return render(req, 'cghd/ar.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def ap(req):
-	return render(req, 'cghd/ap.html', {'urlPath': req.path})
+	return render(req, 'cghd/ap.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def planSchedule(req):
-	return render(req, 'cghd/planSchedule.html', {'urlPath': req.path})
+	user = req.user
+	return render(req, 'cghd/planSchedule.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def planScheduleQuery(req):
@@ -305,19 +448,23 @@ def planScheduleQuery(req):
 
 @login_required
 def businessFreight(req):
+	user = req.user
 	return render(req, 'cghd/businessFreight.html', {'urlPath': req.path})
 
 @login_required
 def businessPurchaseSale(req):
+	user = req.user
 	return render(req, 'cghd/businessPurchaseSale.html', {'urlPath': req.path})
 
 @login_required
 def finGAReport(req):
-	return render(req, 'cghd/finGAReport.html', {'urlPath': req.path})
+	user = req.user
+	return render(req, 'cghd/finGAReport.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def loadUnload(req):
 	return render(req, 'cghd/loadUnload.html', {'urlPath': req.path})
+
 @csrf_exempt
 def uploadFile(req):
 	if req.method == "POST":
