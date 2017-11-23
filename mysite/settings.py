@@ -139,10 +139,22 @@ LOGIN_REDIRECT_URL = "/index/"
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    "formatters":{
+        "cghd":{
+            "format": "[%(name)s] %(asctime)s %(levelname)-8s: %(message)s"        
+        },
+    },
     'handlers': {
+        "console": {
+            "level": 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'cghd',
+        },
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
+            'formatter': 'cghd',
+            'encoding': 'utf-8',
             'filename': os.path.join(BASE_DIR, 'file.log'),
         },
     },
@@ -152,8 +164,8 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'activity.views': {
-            'handlers': ['file'],
+        'cghd.views': {
+            'handlers': ['file', 'console'],
             'level': 'DEBUG',
             'propagate': True,
         },
