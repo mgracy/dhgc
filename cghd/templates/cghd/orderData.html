@@ -3,7 +3,6 @@
 {% block main %}
 <form id="form1" method="post">
 	{% csrf_token %}
-
 	<div class="row"><h3>商务结算：维护订单数据</h3></div>	
 
 	<div class="form">
@@ -65,6 +64,90 @@
 
 <script>
 	$(document).ready(function(){
+		var vPP, vPQ, vSP, vSQ, vLP, vLQ, vCurr = 0;
+		var ppFlag, pqFlag, spFlag, sqFlag, lpFlag, lqFlag = false;
+		$('#divResult').on('change', '.table tr td.dbclicktd', function(){
+			$this = $(this);
+			if($.isNumeric($this.find('input:text').val())){
+				vCurr = Number($this.find('input:text').val());
+				switch($this.attr('class')){
+					case "dbclicktd pp":
+						ppFlag = true;
+						vPP = vCurr;
+						break;
+					case "dbclicktd pq":						
+						pqFlag = true;
+						vPQ = vCurr;
+						break;
+					case "dbclicktd sp":
+						spFlag = true;
+						vSP = vCurr;
+						break;
+					case "dbclicktd sq":
+						sqFlag = true;
+						vSQ = vCurr;
+						break;
+					case "dbclicktd lp":
+						lpFlag = true;
+						vLP = vCurr;
+						break;
+					case "dbclicktd lq":
+						lqFlag = true;
+						vLQ = vCurr;
+						break;
+				}
+			}else{
+				alert('请输入整数或小数')
+				$this.find('input:text').focus().select();
+				return false;
+			}
+
+			$this.siblings('td.dbclicktd').each(function(i, item){
+				if($.isNumeric($(item).text())){
+					vCurr = Number($(item).text());
+					switch($(item).attr('class')){
+						case "dbclicktd pp":
+							ppFlag = true;
+							vPP = vCurr;
+							break;
+						case "dbclicktd pq":						
+							pqFlag = true;
+							vPQ = vCurr;
+							break;
+						case "dbclicktd sp":
+							spFlag = true;
+							vSP = vCurr;
+							break;
+						case "dbclicktd sq":
+							sqFlag = true;
+							vSQ= vCurr;
+							break;
+						case "dbclicktd lp":
+							lpFlag = true;
+							vLP= vCurr;
+							break;
+						case "dbclicktd lq":
+							lqFlag = true;
+							vLQ= vCurr;
+							break;
+					}
+				}
+				console.log(i);
+
+				console.log($(item).text());
+			});
+
+			if(ppFlag && pqFlag && spFlag && sqFlag && lpFlag && lqFlag){
+				var md = (vSP*vSQ -vPP*vPQ - vLP*vLQ);
+				var dd = 0;
+				if(vSQ>0){
+					dd = (md / vSQ).toFixed(2);
+				}
+				
+				$this.siblings('td.md').text(md);
+				$this.siblings('td.dd').text(dd);
+			}
+		});
 		// 毛差=（销售结算价*销售结算量）-（采购结算价*采购结算量）-（物流结算价*物流结算量）
 		// 吨毛差=毛差/销售结算量    	
 		$("#btnQuery").click(function(){
@@ -110,15 +193,15 @@
 							'<th>装货日期</th>'+
 							'<th>牵引车号</th>'+
 							'<th>槽罐车号</th>'+
-							'<th class="dbclicktd">采购结算量</th>'+
-							'<th class="dbclicktd">采购结算价</th>'+
-							'<th class="dbclicktd">销售结算量</th>'+
-							'<th class="dbclicktd">销售结算价</th>'+
-							'<th class="dbclicktd">物流结算量</th>'+
-							'<th class="dbclicktd">物流结算价</th>'+
+							'<th class="dbclicktd pq">采购结算量</th>'+
+							'<th class="dbclicktd pp">采购结算价</th>'+
+							'<th class="dbclicktd sq">销售结算量</th>'+
+							'<th class="dbclicktd sp">销售结算价</th>'+
+							'<th class="dbclicktd lq">物流结算量</th>'+
+							'<th class="dbclicktd lp">物流结算价</th>'+
 							'<th>销售员</th>'+
-							'<th>毛差</th>'+
-							'<th>吨毛差</th>'+						
+							'<th class="md">毛差</th>'+
+							'<th class="dd">吨毛差</th>'+						
 							'<th>备注</th>'+
 							'<th style="display:none;">id</th>'+
 						'</tr> ';
@@ -160,15 +243,15 @@
 							'<td>' + data[i]["Load_Date"] + '</td>'+
 							'<td>' + data[i]["Tractor_No"] + '</td>'+
 							'<td>' + data[i]["Tank_No"] + '</td>'+
-							'<td class="dbclicktd">' + fPoQty + '</td>'+
-							'<td class="dbclicktd">' + fPoPrice + '</td>'+
-							'<td class="dbclicktd">' + fSalesQty + '</td>'+
-							'<td class="dbclicktd">' + fSalesPrice + '</td>'+
-							'<td class="dbclicktd">' + fLogisticsQty + '</td>'+
-							'<td class="dbclicktd">' + fLogisticsPrice + '</td>'+
+							'<td class="dbclicktd pq">' + fPoQty + '</td>'+
+							'<td class="dbclicktd pp">' + fPoPrice + '</td>'+
+							'<td class="dbclicktd sq">' + fSalesQty + '</td>'+
+							'<td class="dbclicktd sp">' + fSalesPrice + '</td>'+
+							'<td class="dbclicktd lq">' + fLogisticsQty + '</td>'+
+							'<td class="dbclicktd lp">' + fLogisticsPrice + '</td>'+
 							'<td>' + data[i]["Salesmen"] + '</td>'+
-							'<td>' + fMDeviation + '</td>'+
-							'<td>' + fDDeviation + '</td>'+
+							'<td class="md">' + fMDeviation + '</td>'+
+							'<td class="dd">' + fDDeviation + '</td>'+
 							'<td>' + data[i]["Dispatch_Mark"] + '</td>'+
 							'<td style="display:none;">' + data[i]["id"] + '</td>'+
 						'</tr>';

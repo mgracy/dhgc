@@ -3,7 +3,6 @@
 {% block main %}
 <form id="form1" method="post">
 	{% csrf_token %}
-
 	<div class="row"><h3>调度物流：维护运输数据</h3></div>	
 
 	<div class="form">
@@ -171,7 +170,7 @@
 
 				table += '</table';
 							
-				$("#divResult").html(table);	
+				$("#divResult").html(table);
 				$('#kv-success-1').html("查询成功, 共有 " + data.length + " 条记录");
 				$('#kv-success-1').fadeIn('show').fadeOut(3000);
 				},

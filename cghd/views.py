@@ -77,7 +77,7 @@ def salesOrder(req):
 				Create_By = user.username
 			).save()
 		
-		return render(req, 'cghd/salesOrder.html', {'user': user, 'msg': msg})
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path, 'msg': msg})
 	else:
 		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path})
 
@@ -86,7 +86,7 @@ def transportData(req):
 	user = req.user
 	if req.method == "POST":
 		msg = u"维护运输数据成功"
-		hiddenData = req.POST.get('hiddenData')	
+		hiddenData = req.POST.get('hiddenData')		
 		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="m0"','').replace(' m1','').replace(' m2','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
 		# print(hiddenData)
 		trs = hiddenData.split('<tr>')
@@ -127,7 +127,7 @@ def transportData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return HttpResponse('<h1>{}</h1>'.format(msg))
+		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path, 'msg': msg})
 	else:
 		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path})
 
@@ -159,7 +159,7 @@ def changeOrder(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return HttpResponse('<h1>{}</h1>'.format(msg))
+		return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path, 'msg': msg})
 
 	return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path})
 
@@ -279,7 +279,11 @@ def orderData(req):
 	if req.method == "POST":
 		msg = u"维护订单数据成功"
 		hiddenData = req.POST.get('hiddenData')		
-		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		hiddenData = hiddenData.replace(' style="display:none;"','')
+		hiddenData = hiddenData.replace(' class="md"','')
+		hiddenData = hiddenData.replace(' class="dd"','')
+		hiddenData = hiddenData.replace(' pp','').replace(' pq','').replace(' sp','').replace(' sq','').replace(' lp','').replace(' lq','')
+		hiddenData = hiddenData.replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
 		print(hiddenData)
 		print('--------------')
 		trs = hiddenData.split('<tr>')
@@ -330,7 +334,7 @@ def orderData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return HttpResponse('<h1>{}</h1>'.format(msg))
+		return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path, 'msg': msg})
 
 	return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path})
 
@@ -643,9 +647,10 @@ class UserFormLogin(forms.Form):
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
 
 def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+	if x_forwarded_for:
+		ip = x_forwarded_for.split(',')[0]
+	else:
+		ip = request.META.get('REMOTE_ADDR')
+
+	return ip
