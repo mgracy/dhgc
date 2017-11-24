@@ -86,8 +86,8 @@ def transportData(req):
 	user = req.user
 	if req.method == "POST":
 		msg = u"维护运输数据成功"
-		hiddenData = req.POST.get('hiddenData')		
-		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		hiddenData = req.POST.get('hiddenData')	
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="m0"','').replace(' m1','').replace(' m2','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
 		# print(hiddenData)
 		trs = hiddenData.split('<tr>')
 		for i in range(2, len(trs)):
