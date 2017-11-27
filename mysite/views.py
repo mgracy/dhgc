@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.contrib import auth
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def index(request):
 	user = request.user
 	http_referer = request.META.get('HTTP_REFERER')
