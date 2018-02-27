@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from cghd.models import XlsInfo, Business, Business_Actual
+from cghd.models import XlsInfo, Business, Business_Actual, Menu
 from django.contrib.auth.models import User
 import cghd.excel
 import os
@@ -21,13 +21,20 @@ logger = logging.getLogger(__name__)
 
 def t2(req):
 	user = req.user
-	return render(req, 'cghd/t2.html',{'user':user})
+	menus=Menu.objects.filter(IsEffective=1).order_by('-Order')
+	return render(req, 'cghd/t2.html',{'user':user, 'menus': menus})
+
+def load_menu():
+	menus = Menu.objects.filter(IsEffective=1).order_by('-Order')
+	print(len(menus))
+	return menus
 
 @login_required
 def index(req):
 	user = req.user
+	menus = load_menu()
 	print('index..................')
-	return render(req, 'cghd/index.html',{'user':user})
+	return render(req, 'cghd/index.html',{'user':user, 'menus': menus})
 
 def uploaded(req):
 	print('uploaded..................')
@@ -36,6 +43,7 @@ def uploaded(req):
 @login_required
 def salesOrder(req):
 	user = req.user
+	menus = load_menu()
 	if req.method == "POST":
 		msg = u"数据保存成功"
 		hiddenData = req.POST.get('hiddenData')
@@ -77,13 +85,14 @@ def salesOrder(req):
 				Create_By = user.username
 			).save()
 		
-		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
 	else:
-		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path})
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def transportData(req):
 	user = req.user
+	menus = load_menu()
 	if req.method == "POST":
 		msg = u"维护运输数据成功"
 		hiddenData = req.POST.get('hiddenData')		
@@ -127,13 +136,14 @@ def transportData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return render(req, 'cghd/transportData.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
 	else:
-		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path})
+		return render(req, 'cghd/transportData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def changeOrder(req):
 	user = req.user
+	menus = load_menu()
 	if req.method == "POST":
 		msg = u"变更订单数据成功"
 		hiddenData = req.POST.get('hiddenData')		
@@ -159,9 +169,9 @@ def changeOrder(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return render(req, 'cghd/changeOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
 
-	return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path})
+	return render(req, 'cghd/changeOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def getOrderInfo(req):
@@ -276,6 +286,7 @@ def getOrderInfo(req):
 @login_required
 def orderData(req):
 	user = req.user
+	menus = load_menu()
 	if req.method == "POST":
 		msg = u"维护订单数据成功"
 		hiddenData = req.POST.get('hiddenData')		
@@ -334,25 +345,28 @@ def orderData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return render(req, 'cghd/orderData.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
 
-	return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path})
+	return render(req, 'cghd/orderData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 
 @login_required
 def basicData(req):
 	user = req.user
-	return render(req, 'cghd/basicData.html', {'user': user, 'urlPath': req.path})
+	menus = load_menu()
+	return render(req, 'cghd/basicData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def master(req):
 	user = req.user
-	return render(req, 'cghd/master.html', {'user': user, 'urlPath': req.path})
+	menus = load_menu()
+	return render(req, 'cghd/master.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def creditData(req):
 	user = req.user
-	return render(req, 'cghd/creditData.html', {'user': user, 'urlPath': req.path})
+	menus = load_menu()
+	return render(req, 'cghd/creditData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 def login(req):
 	if req.method == "POST":
@@ -374,21 +388,26 @@ def login(req):
 @login_required
 def supplier(req):
 	user = req.user
-	return render(req, 'cghd/supplier.html', {'user': user, 'urlPath': req.path})
+	menus = load_menu()
+	return render(req, 'cghd/supplier.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def ar(req):
 	user = req.user
-	return render(req, 'cghd/ar.html', {'user': user, 'urlPath': req.path})
+	menus = load_menu()
+	return render(req, 'cghd/ar.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def ap(req):
-	return render(req, 'cghd/ap.html', {'user': user, 'urlPath': req.path})
+	user = req.user
+	menus = load_menu()
+	return render(req, 'cghd/ap.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def planSchedule(req):
 	user = req.user
-	return render(req, 'cghd/planSchedule.html', {'user': user, 'urlPath': req.path})
+	menus = load_menu()
+	return render(req, 'cghd/planSchedule.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def planScheduleQuery(req):
@@ -453,17 +472,19 @@ def planScheduleQuery(req):
 @login_required
 def businessFreight(req):
 	user = req.user
+	menus = load_menu()
 	return render(req, 'cghd/businessFreight.html', {'urlPath': req.path})
 
 @login_required
 def businessPurchaseSale(req):
-	user = req.user
+	user = req.user	
 	return render(req, 'cghd/businessPurchaseSale.html', {'urlPath': req.path})
 
 @login_required
 def finGAReport(req):
 	user = req.user
-	return render(req, 'cghd/finGAReport.html', {'user': user, 'urlPath': req.path})
+	menus = load_menu()
+	return render(req, 'cghd/finGAReport.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
 def loadUnload(req):

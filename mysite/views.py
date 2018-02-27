@@ -3,7 +3,10 @@ from django.contrib import auth
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+import logging
+from cghd.views import load_menu
 
+logger = logging.getLogger(__name__)
 @login_required
 def index(request):
 	user = request.user
@@ -14,7 +17,8 @@ def index(request):
 	else:
 		http_referer = "/accounts/login?next={}".format(http_referer)
 	
-	return render(request, 'cghd/index.html',{'user':user, 'http_referer':http_referer})
+	menus = load_menu()
+	return render(request, 'cghd/index.html',{'user':user, 'menus': menus, 'http_referer':http_referer})
 
 def finduser(request):
 	user = User.objects.filter(username=request.GET['username'])	
@@ -24,7 +28,8 @@ def finduser(request):
 		return HttpResponse("{'code':404,'text':'the account is not exists.'}")
 
 def login(request):
-	if request.user.is_authenticated(): 
+
+	if request.user.is_authenticated: 
 		return HttpResponseRedirect('/')
 
 	if request.method =="POST":
