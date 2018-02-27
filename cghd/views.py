@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from cghd.models import XlsInfo, Business, Business_Actual, Test, Menu
+from cghd.models import XlsInfo, Business, Business_Actual, Test, Menu, SalesData
 from django.db.models import F
 from django.contrib.auth.models import User
 import cghd.excel
@@ -25,11 +25,11 @@ logger = logging.getLogger(__name__)
 
 def t2(req):
 	user = req.user
-	menus=Menu.objects.filter(IsEffective=1).order_by('-Order')
+	menus = load_menu
 	return render(req, 'cghd/t2.html',{'user':user, 'menus': menus})
 
 def load_menu():
-	menus = Menu.objects.filter(IsEffective=1).order_by('-Order')
+	menus = Menu.objects.filter(IsEffective=1).order_by('Order')
 	print(len(menus))
 	return menus
 
@@ -426,6 +426,18 @@ def master(req):
 	return render(req, 'cghd/master.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 @login_required
+def salesData(req):
+	user = req.user
+	menus = load_menu()
+	return render(req, 'cghd/salesData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+
+@login_required
+def salesDataReport(req):
+	user = req.user
+	menus = load_menu()
+	return render(req, 'cghd/salesDataReport.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+
+@login_required
 def creditData(req):
 	user = req.user
 	menus = load_menu()
@@ -658,6 +670,45 @@ def uploadMaster(req):
 		return HttpResponse("get")
 		# M_Deviation = 0,#str2int(data['毛差']),
 		# D_Deviation = 0#str2int(data['吨毛差'])
+
+@csrf_exempt
+def uploadSalesData(req):
+	if req.method == "POST":
+		myFile = req.FILES.get('upfile')
+		file = myFile.read()
+		author = req.user.username
+		with open('cghd/files/{}-{}'.format(author, myFile.name), 'wb') as fn:
+			fn.write(file)
+		my_file = os.path.join(BASE_DIR, 'files/{}-{}'.format(author, myFile.name))
+
+		dataList = cghd.excel.ReadXls(my_file)
+
+		print(str(dataList))
+		i = 0
+		print('Now, we are going to save the dataList to db...')
+		# for data in dataList:
+		# 	Business(Order = data['订单号'],
+		# 		In_Out = data['内外部'],
+		# 		Area = data['所属区域'],
+		# 		C_ID = data['客户ID'],
+		# 		C_BriefName = data['客户名称'],
+		# 		Unload_Address = data['卸气地'],
+		# 		Unload_Date = datetime.datetime.strptime(data['卸货日期'], DATE_FORMAT).date(),
+	
+		# 	).save()
+		i += 1
+		print('i = {}'.format(i))
+		print('Save the dataList to db completely...')
+
+		return HttpResponse(str(dataList).replace("'",'"'))
+	else:
+		print('fffffffffffffffffffff')
+		print(xldate_as_datetime('43034.0'))
+		print('fffffffffffffffffffff')
+		return HttpResponse("get")
+		# M_Deviation = 0,#str2int(data['毛差']),
+		# D_Deviation = 0#str2int(data['吨毛差'])
+
 @csrf_exempt
 def uploadAr(req):
 	if req.method == "POST":
