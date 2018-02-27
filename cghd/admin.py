@@ -1,9 +1,3 @@
 from django.contrib import admin
-from .models import Emp, Role, Customer, Supplier, Cash_Credit_Limit, Test
-# Register your models here.
-admin.site.register(Emp)
-admin.site.register(Role)
-admin.site.register(Customer)
-admin.site.register(Supplier)
-admin.site.register(Cash_Credit_Limit)
-admin.site.register(Test)
+from .models import Emp, Role, Customer, Supplier, Cash_Credit_Limit, Test, Menu
+admin.site.register(Menu)
