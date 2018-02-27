@@ -27,6 +27,7 @@ urlpatterns = [
 	url(r'^fingareport/$', views.finGAReport),
 	url(r'^loadunload/$', views.loadUnload),
 	url(r'^t2/$', views.t2),
+	url(r'test/$', views.test),
 	# url(r'^login/$', views.login, name='login'),
 	# url(r'^upload/$', views.upload_file, name='upload'),
 	# url(r'^logout/$', views.logout_user, name='logout'),

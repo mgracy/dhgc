@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from cghd.models import XlsInfo, Business, Business_Actual, Test
-from django.db.models import F
+from cghd.models import XlsInfo, Business, Business_Actual
 from django.contrib.auth.models import User
 import cghd.excel
 import os
@@ -12,9 +11,6 @@ from django.contrib.auth import authenticate, login, logout
 import hashlib
 import datetime
 import logging
-from django.db import transaction
-from django.core.cache import cache as redis
-import random
 # from django.template import RequestContext
 
 # Create your views here.
@@ -26,65 +22,6 @@ logger = logging.getLogger(__name__)
 def t2(req):
 	user = req.user
 	return render(req, 'cghd/t2.html',{'user':user})
-
-for t1 in Test.objects.all():
-	key='test_id=%s' % t1.id
-	redis.set(key, t1.remain)
-
-def test(req):
-	i = random.randint(0,5)
-	if i in [1,2,3,4]:
-		return HttpResponse('<h1>quota ran out.</h1>')
-		
-	t = Test.objects.filter(name='Test')
-	print('use is {}'.format(t[0].use))
-	print('remain is {}'.format(t[0].remain))
-	key='test_id=%s' % t[0].id
-	remain = redis.get(key, 0)
-
-	if remain >0:
-		redis.decr(key)
-		t.update(use=F("use")+1, remain=F("remain")-1)
-		use = t[0].use
-		remain = t[0].remain
-		return HttpResponse('<h1>Update success</h1><br />{} <br /><span style="color:red;">{}</span>'.format(use,remain))
-	else:
-		return HttpResponse('<h1>quota ran out.</h1>')
-
-# 分流
-def test2(req):
-	t = Test.objects.filter(name='Test')
-	print('use is {}'.format(t[0].use))
-	print('remain is {}'.format(t[0].remain))
-	key='test_id=%s' % t[0].id
-	remain = redis.get(key, 0)
-
-	if remain >0:
-		redis.decr(key)
-		t.update(use=F("use")+1, remain=F("remain")-1)
-		use = t[0].use
-		remain = t[0].remain
-		return HttpResponse('<h1>Update success</h1><br />{} <br /><span style="color:red;">{}</span>'.format(use,remain))
-	else:
-		return HttpResponse('<h1>quota ran out.</h1>')
-
-
-@transaction.atomic
-def test3(req):
-	t = Test.objects.filter(name='Test')
-	print('use is {}'.format(t[0].use))
-	print('remain is {}'.format(t[0].remain))
-
-	if t[0].remain >0:
-		redis.decr(key)
-		t.update(use=F("use")+1, remain=F("remain")-1)
-		for t1 in Test.objects.all():
-			t1.full_clean()
-		use = t[0].use
-		remain = t[0].remain
-		return HttpResponse('<h1>Update success</h1><br />{} <br /><span style="color:red;">{}</span>'.format(use,remain))
-	else:
-		return HttpResponse('<h1>quota ran out.</h1>')
 
 @login_required
 def index(req):
@@ -140,7 +77,7 @@ def salesOrder(req):
 				Create_By = user.username
 			).save()
 		
-		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'msg': msg})
 	else:
 		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path})
 
@@ -190,7 +127,7 @@ def transportData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return HttpResponse('<h1>{}</h1>'.format(msg))
 	else:
 		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path})
 
@@ -222,7 +159,7 @@ def changeOrder(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return HttpResponse('<h1>{}</h1>'.format(msg))
 
 	return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path})
 
@@ -322,7 +259,7 @@ def getOrderInfo(req):
 		# data['Actual_Logistics_Amount'] = str(businessList.Actual_Logistics_Amount)
 		data['Logistics_Price'] = str(businessList.Logistics_Price)
 		data['Logistics_QTY'] = str(businessList.Logistics_QTY)
-		data['Actual_Logistics_Amount'] = str(businessList.Actual_Logistics_Amount)
+		data['Actual_Logistics_Price'] = str(businessList.Actual_Logistics_Price)
 		data['Salesmen'] = str(businessList.Salesmen)
 		data['M_Deviation'] = str(businessList.M_Deviation)
 		data['D_Deviation'] = str(businessList.D_Deviation)
@@ -342,11 +279,7 @@ def orderData(req):
 	if req.method == "POST":
 		msg = u"维护订单数据成功"
 		hiddenData = req.POST.get('hiddenData')		
-		hiddenData = hiddenData.replace(' style="display:none;"','')
-		hiddenData = hiddenData.replace(' class="md"','')
-		hiddenData = hiddenData.replace(' class="dd"','')
-		hiddenData = hiddenData.replace(' pp','').replace(' pq','').replace(' sp','').replace(' sq','').replace(' lp','').replace(' lq','')
-		hiddenData = hiddenData.replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
 		print(hiddenData)
 		print('--------------')
 		trs = hiddenData.split('<tr>')
@@ -371,7 +304,7 @@ def orderData(req):
 				fLogisticsPrice= 0
 				fMDeviation = 0
 				fDDeviation = 0;
-				logger.debug('fSalesQty: {}, error: {}'.format(fSalesQty, e))		
+				loger.debug('fSalesQty: {}, error: {}'.format(fSalesQty, e))		
 
 			bid = tds[33]
 			logger.debug(u'用户{}修改id={}'.format(user.username,bid))
@@ -397,7 +330,7 @@ def orderData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path, 'msg': msg})
+		return HttpResponse('<h1>{}</h1>'.format(msg))
 
 	return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path})
 
@@ -710,10 +643,9 @@ class UserFormLogin(forms.Form):
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
 
 def get_client_ip(request):
-	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-	if x_forwarded_for:
-		ip = x_forwarded_for.split(',')[0]
-	else:
-		ip = request.META.get('REMOTE_ADDR')
-
-	return ip
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
