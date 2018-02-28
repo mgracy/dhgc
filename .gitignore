@@ -19,3 +19,4 @@ config.py
 base.html
 models.py
 .gitattributes
+.idea
