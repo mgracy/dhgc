@@ -544,7 +544,7 @@ def getSalesDataSort(req):
 	if marketType:
 		salesDatas = salesDatas.filter(MarketType=marketType)
 
-	salesDatas =  salesDatas.values('TransferDate','Area','CustomerName','CustomerType','MarketType').annotate(QTY=Sum('QTY')).order_by('TransferDate','Area','CustomerName','CustomerType','MarketType','-QTY')
+	salesDatas =  salesDatas.values('TransferDate','Area','CustomerName','CustomerType','MarketType').annotate(QTY=Sum('QTY')).order_by('-QTY')
 	
 	print(len(salesDatas))
 	print(salesDatas)
