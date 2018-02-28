@@ -451,11 +451,29 @@ def salesDataReport(req):
 		'marketTypes': marketTypes
 	}
 	return render(req, 'cghd/salesDataReport.html', context)	
-	# return render(req, 'cghd/salesDataReport.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+
+@login_required
+def salesDataSort(req):
+	user = req.user
+	menus = load_menu()
+
+	salesData = SalesData.objects
+	areas = salesData.values('Area').distinct()
+	customerTypes = salesData.values('CustomerType').distinct()
+	marketTypes = salesData.values('MarketType').distinct()
+
+	context = {
+		'user': user, 
+		'menus': menus, 
+		'urlPath': req.path,
+		'areas': areas,
+		'customerTypes': customerTypes,
+		'marketTypes': marketTypes
+	}
+	return render(req, 'cghd/salesDataSort.html', context)	
 
 @csrf_exempt
 def getSalesData(req):
-	print('sssssssssssssssssss')
 	dateFrom = req.POST.get('dateFrom')
 	dateTo = req.POST.get('dateTo')
 	area = req.POST.get('area')
@@ -475,19 +493,11 @@ def getSalesData(req):
 	if marketType:
 		salesDatas = salesDatas.filter(MarketType=marketType)
 
-
-	print('len--{}'.format(len(salesDatas)))
-	print(type(salesDatas))
 	dataList = []
 
 	areas = salesDatas.values('Area').distinct()
-	print(len(areas))
-	print(areas)
-	i = 1
+
 	for area in areas:
-		print(i)
-		i += 1	
-		print(area)
 		data = {}
 		data['Area'] = area["Area"]
 		count_trade = salesDatas.filter(Area=area["Area"], CustomerType=u'贸易商').count()
@@ -496,12 +506,10 @@ def getSalesData(req):
 		count_gas = salesDatas.filter(Area=area["Area"], CustomerType=u'加气站').count()
 		# count_trade = salesDatas.filter(Area=area, CustomerType=u'贸易商').count()
 
-
 		sum_trade = salesDatas.filter(Area=area["Area"], CustomerType=u'贸易商').aggregate(Sum('QTY'))['QTY__sum']
 		sum_city = salesDatas.filter(Area=area["Area"], CustomerType=u'城市燃气').aggregate(Sum('QTY'))['QTY__sum']
 		sum_industry = salesDatas.filter(Area=area["Area"], CustomerType=u'工业用户').aggregate(Sum('QTY'))['QTY__sum']
 		sum_gas = salesDatas.filter(Area=area["Area"], CustomerType=u'加气站').aggregate(Sum('QTY'))['QTY__sum']
-
 
 		data['Cnt_Trade'] = count_trade
 		data['Sum_Trade'] = str2float(sum_trade)
@@ -514,6 +522,49 @@ def getSalesData(req):
 		dataList.append(data)
 
 	return HttpResponse(str(dataList).replace("'",'"'))
+
+@csrf_exempt
+def getSalesDataSort(req):
+	dateFrom = req.POST.get('dateFrom')
+	dateTo = req.POST.get('dateTo')
+	area = req.POST.get('area')
+	customerType = req.POST.get('customerType')
+	marketType = req.POST.get('marketType')
+
+	salesDatas = SalesData.objects.all()
+	
+	if dateFrom:
+		salesDatas = salesDatas.filter(TransferDate=dateFrom)
+	if dateTo:
+		salesDatas = salesDatas.filter(TransferDate=dateTo)
+	if area:
+		salesDatas = salesDatas.filter(Area=area)
+	if customerType:
+		salesDatas = salesDatas.filter(CustomerType=customerType)
+	if marketType:
+		salesDatas = salesDatas.filter(MarketType=marketType)
+
+	salesDatas =  salesDatas.values('TransferDate','Area','CustomerName','CustomerType','MarketType').annotate(QTY=Sum('QTY')).order_by('TransferDate','Area','CustomerName','CustomerType','MarketType','-QTY')
+	
+	print(len(salesDatas))
+	print(salesDatas)
+
+	dataList = []
+
+	areas = salesDatas.values('Area').distinct()
+
+	for sales in salesDatas:
+		data = {}
+		data['Area'] = sales["Area"]
+		data['TransferDate'] = str(sales["TransferDate"])
+		data['CustomerName'] = sales["CustomerName"]
+		data['CustomerType'] = sales["CustomerType"]
+		data['MarketType'] = sales["MarketType"]
+		data['SumQTY'] = str2float(sales["QTY"])
+		dataList.append(data)
+
+	return HttpResponse(str(dataList).replace("'",'"'))
+
 
 @login_required
 def creditData(req):
