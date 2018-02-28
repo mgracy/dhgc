@@ -10,45 +10,108 @@
 
 <div class="row"><h3>销售结构报表</h3></div>	
 
-<form action="">
-  <div class="form-inline">
-    <div class="row col-md-11" style="margin-bottom:5px">
-      <div class="form-group input-group-sm col-xs-7 col-md-7 col-lg-7">
-        <label class="col-xs-3 col-md-3 col-lg-3" for="exampleInputName2">交易日期</label>
-        <input type="text" class="form-control" id="exampleInputName2" placeholder="2017-11-11">
-         <input type="text" class="form-control" id="exampleInputName2" placeholder="2017-11-11">
-      </div>
-      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
-        <label class="col-xs-3 col-md-3 col-lg-4" for="exampleInputEmail2">区域</label>
-        <input type="email" class="form-control" id="exampleInputEmail2" placeholder="华南">
-      </div>
+<div class="form-inline">
+  <div class="row col-md-12" style="margin-bottom:5px">
+    <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
+      <label class="col-xs-4 col-md-4 col-lg-4" for="txtTransferDateFrom">交易日期</label>
+      <input type="text" class="form-control" id="txtTransferDateFrom" placeholder="2017-10-01">
     </div>
-    <div class="row col-md-11" style="margin-bottom:5px">
-      <div class="form-group input-group-sm col-xs-7 col-md-7 col-lg-7">
-        <label class="col-xs-3 col-md-3 col-lg-4" for="exampleInputName2">客户类型</label>
-        <input type="text" class="form-control" id="exampleInputName2" placeholder="2017-11-11">
-        <label class="col-xs-3 col-md-3 col-lg-3" for="exampleInputName2">市场类型</label>
-        <input type="text" class="form-control" id="exampleInputName2" placeholder="2017-11-11">        
-      </div>
-      <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
-        <label class="col-xs-3 col-md-3 col-lg-4" for="exampleInputEmail2"></label>
-        <button type="submit" class="btn btn-default">Query</button>
-      </div>
-    </div>    
+    <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
+       <input type="text" class="form-control" style="margin-left:-50px;" id="txtTransferDateTo" placeholder="2017-10-01">
+    </div>
   </div>
-</form>
+  <div class="row col-md-12" style="margin-bottom:5px">
+    <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
+      <label class="col-xs-4 col-md-4 col-lg-4" for="selArea">区域</label>
+      <select name="selArea" id="selArea">
+         <option></option>
+         {% for area in areas %}
+            <option>{{area.Area}}</option>
+         {% endfor %}
+      </select>
+    </div>
+    <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
+      <label class="col-xs-4 col-md-4 col-lg-4" for="selCustomerType">客户类型</label>
+      <select name="selCustomerType" id="selCustomerType">
+         <option></option>
+         {% for customerType in customerTypes %}
+            <option>{{customerType.CustomerType}}</option>
+         {% endfor %}
+      </select>
+    </div>
+    <div class="form-group input-group-sm col-xs-4 col-md-4 col-lg-4">
+      <label class="col-xs-4 col-md-4 col-lg-4" for="selMarketType">市场类型</label>
+      <select name="selMarketType" id="selMarketType">
+         <option></option>
+         {% for marketType in marketTypes %}
+            <option>{{marketType.MarketType}}</option>
+         {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="row col-md-11" style="margin-bottom:5px">
+      <button type="button" style="float:right;" id="btnQuery" class="btn btn-primary">Query</button>
+  </div>
+</div>
 
 <div id="kv-error-1" style="margin-top:10px;display:none;">error</div>
 <div id="kv-success-1" class="alert alert-success" style="margin-top:10px;display:none;">success</div>
 <div id="divResult"></div>
+<script>
+    $("#btnQuery").click(function(e){
+      var dateFrom = $("#txtTransferDateFrom").val();
+      var dateTo = $("#txtTransferDateTo").val();
+      var area = $("#selArea").val();
+      var customerType = $("#selCustomerType").val();
+      var marketType = $("#selMarketType").val();
 
+      $.ajax({
+        url:'/cghd/getsalesdata/',
+        type:'post',
+        data: {'dateFrom':dateFrom, 'dateTo':dateFrom,'area':area,'customerType':customerType,'marketType':marketType},
+        datatype:'json',
+        success:function(data){
+          console.log(data);
+          console.log(typeof(data));
+          data = eval('('+data+')');
+          var table = '<table class="table table-striped"> '+
+                  '<tr> '+
+                    '<th>区域</th> '+
+                    '<th>贸易商数量</th> '+
+                    '<th>贸易商供应量</th> '+
+                    '<th>城燃客户数量</th> '+
+                    '<th>城燃客户供应量</th> '+
+                    '<th>工业客户数量</th> '+
+                    '<th>工业客户供应量</th> '+
+                    '<th>加气站客户数量</th> '+
+                    '<th>加气站客户供应量</th> '+
+                    // '<th>气源地</th> '+
+                    // '<th>承运商ID</th> '+
+                  '</tr> ';
+              for(var i=0; i<data.length; i++) {
+              table += '<tr> '+
+                    '<td>' + data[i]["Area"] + '</td> '+
+                    '<td>' + data[i]["Cnt_Trade"] + '</td> '+
+                    '<td>' + data[i]["Sum_Trade"] + '</td> '+
+                    '<td>' + data[i]["Cnt_City"] + '</td> '+
+                    '<td>' + data[i]["Sum_City"] + '</td> '+
+                    '<td>' + data[i]["Cnt_Industry"] + '</td> '+
+                    '<td>' + data[i]["Sum_Industry"] + '</td> '+
+                    '<td>' + data[i]["Cnt_Gas"] + '</td> '+
+                    '<td>' + data[i]["Sum_Gas"] + '</td> '+
+                    // '<td>' + data[i]["气源地"] + '</td> '+
+                    // '<td>' + data[i]["承运商ID"] + '</td> '+         
+                  '</tr> ';
+            }
 
-
-{# </form> #}
-
-
-
-
-{# </form> #}
-
+            table += '</table';
+                  
+            $("#divResult").html(table);  
+        },
+        error:function(err){
+          console.log(err);
+        }
+      });
+    });
+</script>
 {% endblock %}

@@ -8,6 +8,7 @@ urlpatterns = [
 	url(r'^salesorder/$', views.salesOrder),
 	url(r'^salesdata/$', views.salesData),
 	url(r'^salesdatareport/$', views.salesDataReport),
+	url(r'^getsalesdata/$', views.getSalesData),
 	url(r'^transportdata/$', views.transportData),
 	url(r'^changeorder/$', views.changeOrder),
 	url(r'^getorderinfo/$', views.getOrderInfo),

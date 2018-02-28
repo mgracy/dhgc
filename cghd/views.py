@@ -15,6 +15,7 @@ import logging
 from django.db import transaction
 from django.core.cache import cache as redis
 import random
+from django.db.models import Sum
 # from django.template import RequestContext
 
 # Create your views here.
@@ -33,9 +34,9 @@ def load_menu():
 	print(len(menus))
 	return menus
 
-for t1 in Test.objects.all():
-	key='test_id=%s' % t1.id
-	redis.set(key, t1.remain)
+# for t1 in Test.objects.all():
+# 	key='test_id=%s' % t1.id
+# 	redis.set(key, t1.remain)
 
 def test(req):
 	i = random.randint(0,5)
@@ -435,12 +436,90 @@ def salesData(req):
 def salesDataReport(req):
 	user = req.user
 	menus = load_menu()
-	return render(req, 'cghd/salesDataReport.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+
+	salesData = SalesData.objects
+	areas = salesData.values('Area').distinct()
+	customerTypes = salesData.values('CustomerType').distinct()
+	marketTypes = salesData.values('MarketType').distinct()
+
+	context = {
+		'user': user, 
+		'menus': menus, 
+		'urlPath': req.path,
+		'areas': areas,
+		'customerTypes': customerTypes,
+		'marketTypes': marketTypes
+	}
+	return render(req, 'cghd/salesDataReport.html', context)	
+	# return render(req, 'cghd/salesDataReport.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+
+@csrf_exempt
+def getSalesData(req):
+	print('sssssssssssssssssss')
+	dateFrom = req.POST.get('dateFrom')
+	dateTo = req.POST.get('dateTo')
+	area = req.POST.get('area')
+	customerType = req.POST.get('customerType')
+	marketType = req.POST.get('marketType')
+
+	salesDatas = SalesData.objects.all()
+	
+	if dateFrom:
+		salesDatas = salesDatas.filter(TransferDate=dateFrom)
+	if dateTo:
+		salesDatas = salesDatas.filter(TransferDate=dateTo)
+	if area:
+		salesDatas = salesDatas.filter(Area=area)
+	if customerType:
+		salesDatas = salesDatas.filter(CustomerType=customerType)
+	if marketType:
+		salesDatas = salesDatas.filter(MarketType=marketType)
+
+
+	print('len--{}'.format(len(salesDatas)))
+	print(type(salesDatas))
+	dataList = []
+
+	areas = salesDatas.values('Area').distinct()
+	print(len(areas))
+	print(areas)
+	i = 1
+	for area in areas:
+		print(i)
+		i += 1	
+		print(area)
+		data = {}
+		data['Area'] = area["Area"]
+		count_trade = salesDatas.filter(Area=area["Area"], CustomerType=u'贸易商').count()
+		count_city = salesDatas.filter(Area=area["Area"], CustomerType=u'城市燃气').count()
+		count_industry = salesDatas.filter(Area=area["Area"], CustomerType=u'工业用户').count()
+		count_gas = salesDatas.filter(Area=area["Area"], CustomerType=u'加气站').count()
+		# count_trade = salesDatas.filter(Area=area, CustomerType=u'贸易商').count()
+
+
+		sum_trade = salesDatas.filter(Area=area["Area"], CustomerType=u'贸易商').aggregate(Sum('QTY'))['QTY__sum']
+		sum_city = salesDatas.filter(Area=area["Area"], CustomerType=u'城市燃气').aggregate(Sum('QTY'))['QTY__sum']
+		sum_industry = salesDatas.filter(Area=area["Area"], CustomerType=u'工业用户').aggregate(Sum('QTY'))['QTY__sum']
+		sum_gas = salesDatas.filter(Area=area["Area"], CustomerType=u'加气站').aggregate(Sum('QTY'))['QTY__sum']
+
+
+		data['Cnt_Trade'] = count_trade
+		data['Sum_Trade'] = str2float(sum_trade)
+		data['Cnt_City'] = count_city
+		data['Sum_City'] = str2float(sum_city)
+		data['Cnt_Industry'] = count_industry
+		data['Sum_Industry'] = str2float(sum_industry)
+		data['Cnt_Gas'] = count_gas
+		data['Sum_Gas'] = str2float(sum_gas)
+		dataList.append(data)
+
+	return HttpResponse(str(dataList).replace("'",'"'))
 
 @login_required
 def creditData(req):
 	user = req.user
 	menus = load_menu()
+	# areas = 
 	return render(req, 'cghd/creditData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
 
 def login(req):
@@ -686,18 +765,20 @@ def uploadSalesData(req):
 		print(str(dataList))
 		i = 0
 		print('Now, we are going to save the dataList to db...')
-		# for data in dataList:
-		# 	Business(Order = data['订单号'],
-		# 		In_Out = data['内外部'],
-		# 		Area = data['所属区域'],
-		# 		C_ID = data['客户ID'],
-		# 		C_BriefName = data['客户名称'],
-		# 		Unload_Address = data['卸气地'],
-		# 		Unload_Date = datetime.datetime.strptime(data['卸货日期'], DATE_FORMAT).date(),
-	
-		# 	).save()
-		i += 1
-		print('i = {}'.format(i))
+		for data in dataList:
+			SalesData(TransferDate = datetime.datetime.strptime(data['交易日期'], DATE_FORMAT).date(),
+				CustomerName = data['客户名称'],
+				Area = data['区域'],
+				CustomerType = data['客户类型'],
+				MarketType = data['市场类型'],
+				SalesPrice = str2float(data['销售单价']),
+				GasSource = data['气源地'],
+				QTY = str2float(data['销售结算量（吨）']),
+				GrossMargin = str2float(data['毛利']),
+				Salesman = data['销售员'],
+			).save()
+			i += 1
+			print('i = {}'.format(i))
 		print('Save the dataList to db completely...')
 
 		return HttpResponse(str(dataList).replace("'",'"'))
@@ -763,13 +844,16 @@ def uploadedFile(req):
 		return HttpResponse("get")
 
 def str2int(s):
-	print('s: {}'.format(s))
 	if s:
-		print(1)
 		return int(s)
 	else:
-		print(2)
 		return 0
+
+def str2float(s):
+	if s:
+		return float(s)
+	else:
+		return 0		
 
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
