@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from cghd.models import XlsInfo, Business, Business_Actual, Test, Menu, SalesData
-from django.db.models import F
+from cghd.models import XlsInfo, Business, Business_Actual
 from django.contrib.auth.models import User
 import cghd.excel
 import os
@@ -12,9 +11,6 @@ from django.contrib.auth import authenticate, login, logout
 import hashlib
 import datetime
 import logging
-from django.db import transaction
-from django.core.cache import cache as redis
-import random
 # from django.template import RequestContext
 
 # Create your views here.
@@ -25,79 +21,13 @@ logger = logging.getLogger(__name__)
 
 def t2(req):
 	user = req.user
-	menus = load_menu
-	return render(req, 'cghd/t2.html',{'user':user, 'menus': menus})
-
-def load_menu():
-	menus = Menu.objects.filter(IsEffective=1).order_by('Order')
-	print(len(menus))
-	return menus
-
-for t1 in Test.objects.all():
-	key='test_id=%s' % t1.id
-	redis.set(key, t1.remain)
-
-def test(req):
-	i = random.randint(0,5)
-	if i in [1,2,3,4]:
-		return HttpResponse('<h1>quota ran out.</h1>')
-		
-	t = Test.objects.filter(name='Test')
-	print('use is {}'.format(t[0].use))
-	print('remain is {}'.format(t[0].remain))
-	key='test_id=%s' % t[0].id
-	remain = redis.get(key, 0)
-
-	if remain >0:
-		redis.decr(key)
-		t.update(use=F("use")+1, remain=F("remain")-1)
-		use = t[0].use
-		remain = t[0].remain
-		return HttpResponse('<h1>Update success</h1><br />{} <br /><span style="color:red;">{}</span>'.format(use,remain))
-	else:
-		return HttpResponse('<h1>quota ran out.</h1>')
-
-# 分流
-def test2(req):
-	t = Test.objects.filter(name='Test')
-	print('use is {}'.format(t[0].use))
-	print('remain is {}'.format(t[0].remain))
-	key='test_id=%s' % t[0].id
-	remain = redis.get(key, 0)
-
-	if remain >0:
-		redis.decr(key)
-		t.update(use=F("use")+1, remain=F("remain")-1)
-		use = t[0].use
-		remain = t[0].remain
-		return HttpResponse('<h1>Update success</h1><br />{} <br /><span style="color:red;">{}</span>'.format(use,remain))
-	else:
-		return HttpResponse('<h1>quota ran out.</h1>')
-
-
-@transaction.atomic
-def test3(req):
-	t = Test.objects.filter(name='Test')
-	print('use is {}'.format(t[0].use))
-	print('remain is {}'.format(t[0].remain))
-
-	if t[0].remain >0:
-		redis.decr(key)
-		t.update(use=F("use")+1, remain=F("remain")-1)
-		for t1 in Test.objects.all():
-			t1.full_clean()
-		use = t[0].use
-		remain = t[0].remain
-		return HttpResponse('<h1>Update success</h1><br />{} <br /><span style="color:red;">{}</span>'.format(use,remain))
-	else:
-		return HttpResponse('<h1>quota ran out.</h1>')
+	return render(req, 'cghd/t2.html',{'user':user})
 
 @login_required
 def index(req):
 	user = req.user
-	menus = load_menu()
 	print('index..................')
-	return render(req, 'cghd/index.html',{'user':user, 'menus': menus})
+	return render(req, 'cghd/index.html',{'user':user})
 
 def uploaded(req):
 	print('uploaded..................')
@@ -106,7 +36,6 @@ def uploaded(req):
 @login_required
 def salesOrder(req):
 	user = req.user
-	menus = load_menu()
 	if req.method == "POST":
 		msg = u"数据保存成功"
 		hiddenData = req.POST.get('hiddenData')
@@ -148,14 +77,13 @@ def salesOrder(req):
 				Create_By = user.username
 			).save()
 		
-		return render(req, 'cghd/salesOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'msg': msg})
 	else:
-		return render(req, 'cghd/salesOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+		return render(req, 'cghd/salesOrder.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def transportData(req):
 	user = req.user
-	menus = load_menu()
 	if req.method == "POST":
 		msg = u"维护运输数据成功"
 		hiddenData = req.POST.get('hiddenData')		
@@ -199,14 +127,13 @@ def transportData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/transportData.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
+		return HttpResponse('<h1>{}</h1>'.format(msg))
 	else:
-		return render(req, 'cghd/transportData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+		return render(req, 'cghd/transportData.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def changeOrder(req):
 	user = req.user
-	menus = load_menu()
 	if req.method == "POST":
 		msg = u"变更订单数据成功"
 		hiddenData = req.POST.get('hiddenData')		
@@ -232,9 +159,9 @@ def changeOrder(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/changeOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
+		return HttpResponse('<h1>{}</h1>'.format(msg))
 
-	return render(req, 'cghd/changeOrder.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/changeOrder.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def getOrderInfo(req):
@@ -332,7 +259,7 @@ def getOrderInfo(req):
 		# data['Actual_Logistics_Amount'] = str(businessList.Actual_Logistics_Amount)
 		data['Logistics_Price'] = str(businessList.Logistics_Price)
 		data['Logistics_QTY'] = str(businessList.Logistics_QTY)
-		data['Actual_Logistics_Amount'] = str(businessList.Actual_Logistics_Amount)
+		data['Actual_Logistics_Price'] = str(businessList.Actual_Logistics_Price)
 		data['Salesmen'] = str(businessList.Salesmen)
 		data['M_Deviation'] = str(businessList.M_Deviation)
 		data['D_Deviation'] = str(businessList.D_Deviation)
@@ -349,15 +276,10 @@ def getOrderInfo(req):
 @login_required
 def orderData(req):
 	user = req.user
-	menus = load_menu()
 	if req.method == "POST":
 		msg = u"维护订单数据成功"
 		hiddenData = req.POST.get('hiddenData')		
-		hiddenData = hiddenData.replace(' style="display:none;"','')
-		hiddenData = hiddenData.replace(' class="md"','')
-		hiddenData = hiddenData.replace(' class="dd"','')
-		hiddenData = hiddenData.replace(' pp','').replace(' pq','').replace(' sp','').replace(' sq','').replace(' lp','').replace(' lq','')
-		hiddenData = hiddenData.replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
+		hiddenData = hiddenData.replace(' style="display:none;"','').replace(' class="dbclicktd"','').replace('</td>','').replace('</tr>','').replace('</tbody>','').replace('</table>','')
 		print(hiddenData)
 		print('--------------')
 		trs = hiddenData.split('<tr>')
@@ -382,7 +304,7 @@ def orderData(req):
 				fLogisticsPrice= 0
 				fMDeviation = 0
 				fDDeviation = 0;
-				logger.debug('fSalesQty: {}, error: {}'.format(fSalesQty, e))		
+				loger.debug('fSalesQty: {}, error: {}'.format(fSalesQty, e))		
 
 			bid = tds[33]
 			logger.debug(u'用户{}修改id={}'.format(user.username,bid))
@@ -408,40 +330,25 @@ def orderData(req):
 			except Exception as e:
 				return HttpResponse('<h1>Error<p style="color:red;">{}</p></h1>'.format(e))	
 
-		return render(req, 'cghd/orderData.html', {'user': user, 'menus': menus, 'urlPath': req.path, 'msg': msg})
+		return HttpResponse('<h1>{}</h1>'.format(msg))
 
-	return render(req, 'cghd/orderData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/orderData.html', {'user': user, 'urlPath': req.path})
 
 
 @login_required
 def basicData(req):
 	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/basicData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/basicData.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def master(req):
 	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/master.html', {'user': user, 'menus': menus, 'urlPath': req.path})
-
-@login_required
-def salesData(req):
-	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/salesData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
-
-@login_required
-def salesDataReport(req):
-	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/salesDataReport.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/master.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def creditData(req):
 	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/creditData.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/creditData.html', {'user': user, 'urlPath': req.path})
 
 def login(req):
 	if req.method == "POST":
@@ -463,26 +370,21 @@ def login(req):
 @login_required
 def supplier(req):
 	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/supplier.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/supplier.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def ar(req):
 	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/ar.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/ar.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def ap(req):
-	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/ap.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/ap.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def planSchedule(req):
 	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/planSchedule.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/planSchedule.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def planScheduleQuery(req):
@@ -547,19 +449,17 @@ def planScheduleQuery(req):
 @login_required
 def businessFreight(req):
 	user = req.user
-	menus = load_menu()
 	return render(req, 'cghd/businessFreight.html', {'urlPath': req.path})
 
 @login_required
 def businessPurchaseSale(req):
-	user = req.user	
+	user = req.user
 	return render(req, 'cghd/businessPurchaseSale.html', {'urlPath': req.path})
 
 @login_required
 def finGAReport(req):
 	user = req.user
-	menus = load_menu()
-	return render(req, 'cghd/finGAReport.html', {'user': user, 'menus': menus, 'urlPath': req.path})
+	return render(req, 'cghd/finGAReport.html', {'user': user, 'urlPath': req.path})
 
 @login_required
 def loadUnload(req):
@@ -670,45 +570,6 @@ def uploadMaster(req):
 		return HttpResponse("get")
 		# M_Deviation = 0,#str2int(data['毛差']),
 		# D_Deviation = 0#str2int(data['吨毛差'])
-
-@csrf_exempt
-def uploadSalesData(req):
-	if req.method == "POST":
-		myFile = req.FILES.get('upfile')
-		file = myFile.read()
-		author = req.user.username
-		with open('cghd/files/{}-{}'.format(author, myFile.name), 'wb') as fn:
-			fn.write(file)
-		my_file = os.path.join(BASE_DIR, 'files/{}-{}'.format(author, myFile.name))
-
-		dataList = cghd.excel.ReadXls(my_file)
-
-		print(str(dataList))
-		i = 0
-		print('Now, we are going to save the dataList to db...')
-		# for data in dataList:
-		# 	Business(Order = data['订单号'],
-		# 		In_Out = data['内外部'],
-		# 		Area = data['所属区域'],
-		# 		C_ID = data['客户ID'],
-		# 		C_BriefName = data['客户名称'],
-		# 		Unload_Address = data['卸气地'],
-		# 		Unload_Date = datetime.datetime.strptime(data['卸货日期'], DATE_FORMAT).date(),
-	
-		# 	).save()
-		i += 1
-		print('i = {}'.format(i))
-		print('Save the dataList to db completely...')
-
-		return HttpResponse(str(dataList).replace("'",'"'))
-	else:
-		print('fffffffffffffffffffff')
-		print(xldate_as_datetime('43034.0'))
-		print('fffffffffffffffffffff')
-		return HttpResponse("get")
-		# M_Deviation = 0,#str2int(data['毛差']),
-		# D_Deviation = 0#str2int(data['吨毛差'])
-
 @csrf_exempt
 def uploadAr(req):
 	if req.method == "POST":
@@ -782,10 +643,9 @@ class UserFormLogin(forms.Form):
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
 
 def get_client_ip(request):
-	x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-	if x_forwarded_for:
-		ip = x_forwarded_for.split(',')[0]
-	else:
-		ip = request.META.get('REMOTE_ADDR')
-
-	return ip
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
