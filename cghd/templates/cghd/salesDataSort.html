@@ -49,8 +49,9 @@
       </select>
     </div>
   </div>
-  <div class="row col-md-11" style="margin-bottom:5px">
-      <button type="button" style="float:right;" id="btnQuery" class="btn btn-primary">Query</button>
+  <div class="row col-md-12" style="margin-bottom:5px">
+      <button type="button" id="btnQuery" class="btn btn-primary col-md-offset-10 col-lg-offset-10">Query</button>
+      <button type="button" style="float:right;display:none;" id="btnExport" class="btn btn-default">Export</button>
   </div>
 </div>
 
@@ -74,9 +75,9 @@
           console.log(data);
           console.log(typeof(data));
           data = eval('('+data+')');
-          var table = '<table class="table table-striped"> '+
+          var table = '<table id="tblSort" class="table table-striped"> '+
                   '<tr> '+
-                    '<th style="display:none;">交易日期</th> '+
+                    // '<th style="display:none;">交易日期</th> '+
                     '<th>区域</th> '+
                     '<th>客户名称</th> '+
                     '<th>客户类型</th> '+
@@ -85,7 +86,7 @@
                   '</tr> ';
               for(var i=0; i<data.length; i++) {
               table += '<tr> '+
-                    '<td style="display:none;">' + data[i]["TransferDate"] + '</td> '+
+                    // '<td style="display:none;">' + data[i]["TransferDate"] + '</td> '+
                     '<td>' + data[i]["Area"] + '</td> '+
                     '<td>' + data[i]["CustomerName"] + '</td> '+
                     '<td>' + data[i]["CustomerType"] + '</td> '+
@@ -96,12 +97,21 @@
 
             table += '</table';
                   
-            $("#divResult").html(table);  
+            $("#divResult").html(table); 
+            $("#btnExport").show();
         },
         error:function(err){
           console.log(err);
+          $("#btnExport").hide();
         }
       });
     });
+
+    $("#btnExport").click(function () {
+        $("#tblSort").table2excel({
+            filename: "Table.xls"
+        });
+    });
+
 </script>
 {% endblock %}
